@@ -51,16 +51,17 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * 查看
- * This file is introduced to fix HTTPS Post bug on API &lt; ICS see
- * https://code.google.com/p/android/issues/detail?id=13117#c14 <p>&nbsp;</p> Warning! This omits SSL
- * certificate validation on every device, use with caution
+ * 这里有篇介绍修复HTTPS协议 API &lt; ICS的bug文章<br>
+ * see https://code.google.com/p/android/issues/detail?id=13117#c14
+ * <p>
+ * 警告！这省略了每个设备上的SSL证书验证，请谨慎使用。
+ * </p>
  */
 public class MySSLSocketFactory extends SSLSocketFactory {
     SSLContext sslContext = SSLContext.getInstance("TLS");
 
     /**
-     * Creates a new SSL Socket Factory with the given KeyStore.
+     * 通过给定的KeyStore创建一个SSLSocketFactory
      *
      * @param truststore A KeyStore to create the SSL Socket Factory in context of
      * @throws NoSuchAlgorithmException  NoSuchAlgorithmException
@@ -97,21 +98,21 @@ public class MySSLSocketFactory extends SSLSocketFactory {
     }
 
     /**
-     * Makes HttpsURLConnection trusts a set of certificates specified by the KeyStore
+     * 使HttpsURLConnection胜任由KeyStore指定的一套证书
      */
     public void fixHttpsURLConnection() {
         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
     }
 
     /**
-     * Gets a KeyStore containing the Certificate
+     * 获取一个包含指定Certificate的KeyStore
      *
-     * @param cert InputStream of the Certificate
+     * @param cert 指定Certificate证书的输入流
      * @return KeyStore
      */
     public static KeyStore getKeystoreOfCA(InputStream cert) {
 
-        // Load CAs from an InputStream
+    	// 从这个InputStream输入流中加载CAs
         InputStream caInput = null;
         Certificate ca = null;
         try {
@@ -130,7 +131,7 @@ public class MySSLSocketFactory extends SSLSocketFactory {
             }
         }
 
-        // Create a KeyStore containing our trusted CAs
+        // 创建一个KeyStore包含我们胜任的CAs证书
         String keyStoreType = KeyStore.getDefaultType();
         KeyStore keyStore = null;
         try {
@@ -144,7 +145,7 @@ public class MySSLSocketFactory extends SSLSocketFactory {
     }
 
     /**
-     * Gets a Default KeyStore
+     * 获取一个默认的KeyStore
      *
      * @return KeyStore
      */
@@ -160,7 +161,7 @@ public class MySSLSocketFactory extends SSLSocketFactory {
     }
 
     /**
-     * Returns a SSlSocketFactory which trusts all certificates
+     * 返回一个胜任所有证书的SSlSocketFactory
      *
      * @return SSLSocketFactory
      */
@@ -177,7 +178,7 @@ public class MySSLSocketFactory extends SSLSocketFactory {
     }
 
     /**
-     * Gets a DefaultHttpClient which trusts a set of certificates specified by the KeyStore
+     * 获得一个DefaultHttpClient，他胜任一套包含指定证书的KeyStore
      *
      * @param keyStore custom provided KeyStore instance
      * @return DefaultHttpClient
