@@ -39,32 +39,47 @@ import java.util.HashSet;
 
 import javax.net.ssl.SSLException;
 
+/**
+ * 请求重试处理器
+ * 
+ * @author lijian
+ * @date 2017-7-25 下午11:08:52
+ */
 class RetryHandler implements HttpRequestRetryHandler {
+	/** 例外白名单 */
     private final static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
+    /** 例外黑名单 */
     private final static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
 
     static {
-        // Retry if the server dropped connection on us
+        // 如果服务器丢弃了我们的连接，请重试
         exceptionWhitelist.add(NoHttpResponseException.class);
-        // retry-this, since it may happens as part of a Wi-Fi to 3G failover
+        // 重试 - 这是因为它可能作为Wi-Fi到3G故障转移的一部分
         exceptionWhitelist.add(UnknownHostException.class);
-        // retry-this, since it may happens as part of a Wi-Fi to 3G failover
+        // 重试 - 这是因为它可能作为Wi-Fi到3G故障转移的一部分
         exceptionWhitelist.add(SocketException.class);
 
-        // never retry timeouts
+        // 从来没有重试超时
         exceptionBlacklist.add(InterruptedIOException.class);
-        // never retry SSL handshake failures
+        // 从不再次尝试SSL握手失败
         exceptionBlacklist.add(SSLException.class);
     }
 
-    private final int maxRetries;
-    private final int retrySleepTimeMS;
+    private final int maxRetries;// 最大重试次数
+    private final int retrySleepTimeMS;// 重试休眠时间
 
     public RetryHandler(int maxRetries, int retrySleepTimeMS) {
         this.maxRetries = maxRetries;
         this.retrySleepTimeMS = retrySleepTimeMS;
     }
 
+	/**
+	 * 重试请求
+	 * 
+	 * @param exception 异常
+	 * @param executionCount 执行次数
+	 * @param context
+	 */
     @Override
     public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
         boolean retry = true;
@@ -73,21 +88,21 @@ class RetryHandler implements HttpRequestRetryHandler {
         boolean sent = (b != null && b);
 
         if (executionCount > maxRetries) {
-            // Do not retry if over max retry count
+            // 如果超过最大重试次数，请勿重试
             retry = false;
         } else if (isInList(exceptionWhitelist, exception)) {
-            // immediately retry if error is whitelisted
+            // 如果错误列入白名单，请立即重试
             retry = true;
         } else if (isInList(exceptionBlacklist, exception)) {
-            // immediately cancel retry if the error is blacklisted
+            // 如果错误被列入黑名单，立即取消重试
             retry = false;
         } else if (!sent) {
-            // for most other errors, retry only if request hasn't been fully sent yet
+            // 对于大多数其他错误，只有当请求尚未完全发送时才重试
             retry = true;
         }
 
         if (retry) {
-            // resend all idempotent requests
+            // 重新发送所有幂等请求
             HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
             if (currentReq == null) {
                 return false;
@@ -103,16 +118,33 @@ class RetryHandler implements HttpRequestRetryHandler {
         return retry;
     }
 
+    /**
+     * 添加到白名单
+     * 
+     * @param cls
+     */
     static void addClassToWhitelist(Class<?> cls) {
         exceptionWhitelist.add(cls);
     }
 
+	/**
+	 * 添加到黑名单
+	 * 
+	 * @param cls
+	 */
     static void addClassToBlacklist(Class<?> cls) {
         exceptionBlacklist.add(cls);
     }
 
+    /**
+     * 判断是否在名单中(黑/白名单)
+     * @param list 黑/白名单
+     * @param error
+     * @return
+     */
     protected boolean isInList(HashSet<Class<?>> list, Throwable error) {
         for (Class<?> aList : list) {
+        	// 测试给定的对象是否可以转换为由此类表示的类。 这是instanceof运算符的运行时版本。
             if (aList.isInstance(error)) {
                 return true;
             }

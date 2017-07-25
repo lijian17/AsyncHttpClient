@@ -289,7 +289,7 @@ public class AsyncHttpClient {
 
 		httpContext = new SyncBasicHttpContext(new BasicHttpContext());
 		httpClient = new DefaultHttpClient(cm, httpParams);
-		// 添加请求拦截器
+		// 添加请求拦截器(对请求头进行处理)
 		httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
 			@Override
 			public void process(HttpRequest request, HttpContext context) {
@@ -314,6 +314,7 @@ public class AsyncHttpClient {
 			}
 		});
 
+		// 添加响应拦截器（对响应进行gzip解码）
 		httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
 			@Override
 			public void process(HttpResponse response, HttpContext context) {
@@ -325,6 +326,7 @@ public class AsyncHttpClient {
 				if (encoding != null) {
 					for (HeaderElement element : encoding.getElements()) {
 						if (element.getName().equalsIgnoreCase(ENCODING_GZIP)) {
+							// gzip解码
 							response.setEntity(new InflatingEntity(entity));
 							break;
 						}
@@ -333,18 +335,23 @@ public class AsyncHttpClient {
 			}
 		});
 
+		// 添加请求拦截器
 		httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
 			@Override
 			public void process(final HttpRequest request,
 					final HttpContext context) throws HttpException,
 					IOException {
+				// 认证状态
 				AuthState authState = (AuthState) context
 						.getAttribute(ClientContext.TARGET_AUTH_STATE);
+				// 证书提供者
 				CredentialsProvider credsProvider = (CredentialsProvider) context
 						.getAttribute(ClientContext.CREDS_PROVIDER);
+				// 目标主机
 				HttpHost targetHost = (HttpHost) context
 						.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 
+				// 如果认证Scheme为null，则重新获取认证得到证书
 				if (authState.getAuthScheme() == null) {
 					AuthScope authScope = new AuthScope(targetHost
 							.getHostName(), targetHost.getPort());
@@ -357,17 +364,28 @@ public class AsyncHttpClient {
 			}
 		}, 0);
 
+		// 设置Http请求重试处理程序
 		httpClient.setHttpRequestRetryHandler(new RetryHandler(
 				DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
 	}
 
+	/**
+	 * 允许重试异常类
+	 * 
+	 * @param cls
+	 */
 	public static void allowRetryExceptionClass(Class<?> cls) {
 		if (cls != null) {
 			RetryHandler.addClassToWhitelist(cls);
 		}
 	}
 
-	public static void blockRetryExceptionClass(Class<?> cls) {
+	/**
+	 * 黑名单（不允许重试的异常类）
+	 * 
+	 * @param cls
+	 */
+	public static void blackRetryExceptionClass(Class<?> cls) {
 		if (cls != null) {
 			RetryHandler.addClassToBlacklist(cls);
 		}
@@ -1903,7 +1921,7 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * A utility function to close an input stream without raising an exception.
+	 * 静默关闭输入流
 	 * 
 	 * @param is
 	 *            input stream to close safely
@@ -1919,8 +1937,7 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * A utility function to close an output stream without raising an
-	 * exception.
+	 * 静默关闭输出流
 	 * 
 	 * @param os
 	 *            output stream to close safely
@@ -2020,6 +2037,7 @@ public class AsyncHttpClient {
 	}
 
 	/**
+	 * 填充实体<br>
 	 * Enclosing entity to hold stream of gzip decoded data for accessing
 	 * HttpEntity contents
 	 */
@@ -2029,7 +2047,7 @@ public class AsyncHttpClient {
 			super(wrapped);
 		}
 
-		InputStream wrappedStream;
+		InputStream wrappedStream;// 包裹流
 		PushbackInputStream pushbackStream;
 		GZIPInputStream gzippedStream;
 
@@ -2052,6 +2070,7 @@ public class AsyncHttpClient {
 
 		@Override
 		public void consumeContent() throws IOException {
+			// 静默关闭输入流，以释放内存
 			AsyncHttpClient.silentCloseInputStream(wrappedStream);
 			AsyncHttpClient.silentCloseInputStream(pushbackStream);
 			AsyncHttpClient.silentCloseInputStream(gzippedStream);
