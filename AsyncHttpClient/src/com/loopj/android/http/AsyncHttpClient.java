@@ -1290,25 +1290,24 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP POST request and track the Android Context which initiated
-	 * the request. Set headers only for this request
+	 * 执行HTTP POST请求并跟踪启动请求的Android上下文。 仅为此请求设置请求头
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set headers only for this request
+	 *            仅为此请求设置请求头
 	 * @param entity
-	 *            a raw {@link HttpEntity} to send with the request, for
-	 *            example, use this to send string/json/xml payloads to a server
-	 *            by passing a {@link org.apache.http.entity.StringEntity}.
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle post(Context context, String url, Header[] headers,
 			HttpEntity entity, String contentType,
@@ -1325,13 +1324,13 @@ public class AsyncHttpClient {
 	// [+] HTTP PUT
 
 	/**
-	 * Perform a HTTP PUT request, without any parameters.
+	 * 执行HTTP PUT请求，没有任何参数。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle put(String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1339,15 +1338,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PUT request with parameters.
+	 * 使用参数执行HTTP PUT请求。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional PUT parameters or files to send with the request.
+	 *            附加PUT参数或要发送的文件。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle put(String url, RequestParams params,
 			ResponseHandlerInterface responseHandler) {
@@ -1355,18 +1354,17 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PUT request and track the Android Context which initiated
-	 * the request.
+	 * 执行HTTP PUT请求并跟踪发起请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional PUT parameters or files to send with the request.
+	 *            附加PUT参数或要发送的文件。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle put(Context context, String url, RequestParams params,
 			ResponseHandlerInterface responseHandler) {
@@ -1375,23 +1373,22 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PUT request and track the Android Context which initiated
-	 * the request. And set one-time headers for the request
+	 * 执行HTTP PUT请求并跟踪发起请求的Android上下文。 并为请求设置一次性请求头
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param entity
-	 *            a raw {@link HttpEntity} to send with the request, for
-	 *            example, use this to send string/json/xml payloads to a server
-	 *            by passing a {@link org.apache.http.entity.StringEntity}.
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle put(Context context, String url, HttpEntity entity,
 			String contentType, ResponseHandlerInterface responseHandler) {
@@ -1401,25 +1398,24 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PUT request and track the Android Context which initiated
-	 * the request. And set one-time headers for the request
+	 * 执行HTTP PUT请求并跟踪发起请求的Android上下文。 并为请求设置一次性请求头
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set one-time headers for this request
+	 *            仅为此请求设置请求头
 	 * @param entity
-	 *            a raw {@link HttpEntity} to send with the request, for
-	 *            example, use this to send string/json/xml payloads to a server
-	 *            by passing a {@link org.apache.http.entity.StringEntity}.
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle put(Context context, String url, Header[] headers,
 			HttpEntity entity, String contentType,
@@ -1433,13 +1429,13 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP request, without any parameters.
+	 * 执行HTTP请求，没有任何参数。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle patch(String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1447,15 +1443,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PATCH request with parameters.
+	 * 执行带有参数的HTTP PATCH请求。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional PUT parameters or files to send with the request.
+	 *            附加PUT参数或要发送的文件。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle patch(String url, RequestParams params,
 			ResponseHandlerInterface responseHandler) {
@@ -1463,18 +1459,17 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PATCH request and track the Android Context which
-	 * initiated the request.
+	 * 执行HTTP PATCH请求并跟踪发起请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional PUT parameters or files to send with the request.
+	 *            附加PUT参数或要发送的文件。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle patch(Context context, String url,
 			RequestParams params, ResponseHandlerInterface responseHandler) {
@@ -1483,23 +1478,22 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PATCH request and track the Android Context which
-	 * initiated the request.
+	 * 执行HTTP PATCH请求并跟踪发起请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
+	 *            响应处理程序实例应该处理响应。
 	 * @param entity
-	 *            a raw {@link HttpEntity} to send with the request, for
-	 *            example, use this to send string/json/xml payloads to a server
-	 *            by passing a {@link org.apache.http.entity.StringEntity}
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            "application/json" if sending a json payload.
-	 * @return RequestHandle of future request process
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle patch(Context context, String url, HttpEntity entity,
 			String contentType, ResponseHandlerInterface responseHandler) {
@@ -1509,25 +1503,24 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP PATCH request and track the Android Context which
-	 * initiated the request. And set one-time headers for the request
+	 * 执行HTTP PATCH请求并跟踪发起请求的Android上下文。 并为请求设置一次性请求头
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set one-time headers for this request
+	 *            仅为此请求设置请求头
 	 * @param entity
-	 *            a raw {@link HttpEntity} to send with the request, for
-	 *            example, use this to send string/json/xml payloads to a server
-	 *            by passing a {@link org.apache.http.entity.StringEntity}.
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle patch(Context context, String url, Header[] headers,
 			HttpEntity entity, String contentType,
@@ -1544,13 +1537,13 @@ public class AsyncHttpClient {
 	// [+] HTTP DELETE
 
 	/**
-	 * Perform a HTTP DELETE request.
+	 * 执行HTTP DELETE请求。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle delete(String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1558,15 +1551,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP DELETE request.
+	 * 执行HTTP DELETE请求。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle delete(Context context, String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1576,17 +1569,17 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP DELETE request.
+	 * 执行HTTP DELETE请求。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set one-time headers for this request
+	 *            仅为此请求设置请求头
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle delete(Context context, String url, Header[] headers,
 			ResponseHandlerInterface responseHandler) {
@@ -1598,15 +1591,14 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP DELETE request.
+	 * 执行HTTP DELETE请求。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional DELETE parameters or files to send with the
-	 *            request.
+	 *            附加DELETE参数或文件发送请求。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
+	 *            响应处理程序实例应该处理响应。
 	 */
 	public void delete(String url, RequestParams params,
 			AsyncHttpResponseHandler responseHandler) {
@@ -1617,20 +1609,19 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP DELETE request.
+	 * 执行HTTP DELETE请求。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set one-time headers for this request
+	 *            仅为此请求设置请求头
 	 * @param params
-	 *            additional DELETE parameters or files to send along with
-	 *            request
+	 *            附加DELETE参数或文件发送请求。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle delete(Context context, String url, Header[] headers,
 			RequestParams params, ResponseHandlerInterface responseHandler) {
@@ -1643,25 +1634,22 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP DELETE request and track the Android Context which
-	 * initiated the request.
+	 * 执行HTTP DELETE请求并跟踪发起请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param entity
-	 *            a raw {@link org.apache.http.HttpEntity} to send with the
-	 *            request, for example, use this to send string/json/xml
-	 *            payloads to a server by passing a
-	 *            {@link org.apache.http.entity.StringEntity}.
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response ha ndler instance that should handle the
-	 *            response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle delete(Context context, String url, HttpEntity entity,
 			String contentType, ResponseHandlerInterface responseHandler) {
@@ -1676,24 +1664,21 @@ public class AsyncHttpClient {
 	// [-] HTTP DELETE
 
 	/**
-	 * Instantiate a new asynchronous HTTP request for the passed parameters.
+	 * 为传递的参数实例化一个新的异步HTTP请求。
 	 * 
 	 * @param client
-	 *            HttpClient to be used for request, can differ in single
-	 *            requests
+	 *            HttpClient用于请求，可以在单个请求中不同
 	 * @param contentType
-	 *            MIME body type, for POST and PUT requests, may be null
+	 *            用于POST和PUT请求的MIME体类型可以为null
 	 * @param context
-	 *            Context of Android application, to hold the reference of
-	 *            request
+	 *            Android应用程序的上下文，保存请求的引用
 	 * @param httpContext
-	 *            HttpContext in which the request will be executed
+	 *            HttpContext将请求执行
 	 * @param responseHandler
-	 *            ResponseHandler or its subclass to put the response into
+	 *            响应处理程序实例应该处理响应。
 	 * @param uriRequest
-	 *            instance of HttpUriRequest, which means it must be of
-	 *            HttpDelete, HttpPost, HttpGet, HttpPut, etc.
-	 * @return AsyncHttpRequest ready to be dispatched
+	 *            HttpUriRequest的实例，这意味着它必须是HttpDelete，HttpPost，HttpGet，HttpPut等。
+	 * @return AsyncHttpRequest准备发送
 	 */
 	protected AsyncHttpRequest newAsyncHttpRequest(DefaultHttpClient client,
 			HttpContext httpContext, HttpUriRequest uriRequest,
@@ -1789,10 +1774,10 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Returns a {@link URI} instance for the specified, absolute URL string.
+	 * 返回指定绝对URL字符串的{@link URI}实例。
 	 * 
 	 * @param url
-	 *            absolute URL string, containing scheme, host and path
+	 *            绝对URL字符串，包含方案，主机和路径
 	 * @return URI instance for the URL string
 	 */
 	protected URI getURI(String url) {
@@ -1800,11 +1785,10 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets state of URL encoding feature, see bug #227, this method allows you
-	 * to turn off and on this auto-magic feature on-demand.
+	 * 设置URL编码功能的状态，请参阅bug＃227，此方法允许您根据需要关闭此自动魔术功能。
 	 * 
 	 * @param enabled
-	 *            desired state of feature
+	 *            想要的特征状态
 	 */
 	public void setURLEncodingEnabled(boolean enabled) {
 		this.isUrlEncodingEnabled = enabled;
@@ -1944,13 +1928,12 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Applicable only to HttpRequest methods extending
-	 * HttpEntityEnclosingRequestBase, which is for example not DELETE
+	 * 仅适用于扩展HttpEntityEnclosingRequestBase的Http请求方法，例如不是DELETE
 	 * 
 	 * @param entity
-	 *            entity to be included within the request
+	 *            要包含在请求中的实体
 	 * @param requestBase
-	 *            HttpRequest instance, must not be null
+	 *            HttpRequest实例，不能为null
 	 */
 	private HttpEntityEnclosingRequestBase addEntityToRequestBase(
 			HttpEntityEnclosingRequestBase requestBase, HttpEntity entity) {
