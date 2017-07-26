@@ -392,85 +392,80 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Get the underlying HttpClient instance. This is useful for setting
-	 * additional fine-grained settings for requests by accessing the client's
-	 * ConnectionManager, HttpParams and SchemeRegistry.
+	 * 获取底层的HttpClient实例<br>
+	 * 这通过访问客户端的ConnectionManager，HttpParams和SchemeRegistry来为请求设置其他细粒度设置非常有用。
 	 * 
-	 * @return underlying HttpClient instance
+	 * @return 底层HttpClient实例
 	 */
 	public HttpClient getHttpClient() {
 		return this.httpClient;
 	}
 
 	/**
-	 * Get the underlying HttpContext instance. This is useful for getting and
-	 * setting fine-grained settings for requests by accessing the context's
-	 * attributes such as the CookieStore.
+	 * 获取底层的HttpContext实例<br>
+	 * 这通过访问上下文的属性（如CookieStore）来获取和设置请求的细粒度设置非常有用。
 	 * 
-	 * @return underlying HttpContext instance
+	 * @return 底层HttpContext实例
 	 */
 	public HttpContext getHttpContext() {
 		return this.httpContext;
 	}
 
 	/**
-	 * Will set logging enabled flag on underlying LogInterface instance.
-	 * Default setting is logging enabled.
+	 * 将在LogInterface底层实例上设置记录启用标志。 默认设置是启用日志记录。
 	 * 
 	 * @param loggingEnabled
-	 *            whether the logging should be enabled or not
+	 *            是否应启用日志记录(true:开启；false:关闭)
 	 */
 	public void setLoggingEnabled(boolean loggingEnabled) {
 		log.setLoggingEnabled(loggingEnabled);
 	}
 
 	/**
-	 * Returns logging enabled flag from underlying LogInterface instance
-	 * Default setting is logging enabled.
+	 * 从底层LogInterface实例返回记录启用标志<br>
+	 * 默认设置是启用日志记录。
 	 * 
-	 * @return boolean whether is logging across the library currently enabled
+	 * @return boolean 日志当前状态（true:开启：false:关闭）
 	 */
 	public boolean isLoggingEnabled() {
 		return log.isLoggingEnabled();
 	}
 
 	/**
-	 * Sets log level to be used across all library default implementation
-	 * Default setting is VERBOSE log level.
+	 * 设置日志等级<br>
+	 * 默认设置为VERBOSE日志级别。
 	 * 
 	 * @param logLevel
-	 *            int log level, either from LogInterface interface or from
-	 *            {@link android.util.Log}
+	 *            日志级别，可查考{@link android.util.Log}
 	 */
 	public void setLoggingLevel(int logLevel) {
 		log.setLoggingLevel(logLevel);
 	}
 
 	/**
-	 * Retrieves current log level from underlying LogInterface instance.
-	 * Default setting is VERBOSE log level.
+	 * 当前日志级别<br>
+	 * 默认设置为VERBOSE日志级别。
 	 * 
-	 * @return int log level currently in effect
+	 * @return
 	 */
 	public int getLoggingLevel() {
 		return log.getLoggingLevel();
 	}
 
 	/**
-	 * Will return current LogInterface used in AsyncHttpClient instance
+	 * 将返回AsyncHttpClient实例中使用的当前LogInterface
 	 * 
-	 * @return LogInterface currently used by AsyncHttpClient instance
+	 * @return AsyncHttpClient实例当前使用的LogInterface
 	 */
 	public LogInterface getLogInterface() {
 		return log;
 	}
 
 	/**
-	 * Sets default LogInterface (similar to std Android Log util class)
-	 * instance, to be used in AsyncHttpClient instance
+	 * 设置默认LogInterface（类似于std Android Log util class）实例，用于AsyncHttpClient实例
 	 * 
 	 * @param logInterfaceInstance
-	 *            LogInterface instance, if null, nothing is done
+	 *            LogInterface实例，如果为null，则不做任何操作
 	 */
 	public void setLogInterface(LogInterface logInterfaceInstance) {
 		if (logInterfaceInstance != null) {
@@ -479,57 +474,55 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets an optional CookieStore to use when making requests
+	 * 设置可选的CookieStore以在请求时使用
 	 * 
 	 * @param cookieStore
-	 *            The CookieStore implementation to use, usually an instance of
-	 *            {@link PersistentCookieStore}
+	 *            要使用的CookieStore实现，通常是{@link PersistentCookieStore}的一个实例
 	 */
 	public void setCookieStore(CookieStore cookieStore) {
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 	}
 
 	/**
-	 * Overrides the threadpool implementation used when queuing/pooling
-	 * requests. By default, Executors.newCachedThreadPool() is used.
+	 * 覆盖在queuing/pooling请求时使用的线程池实现<br>
+	 * 默认情况下，使用Executors.newCachedThreadPool()
 	 * 
 	 * @param threadPool
-	 *            an instance of {@link ExecutorService} to use for
-	 *            queuing/pooling requests.
+	 *            用于queuing/pooling请求的{@link ExecutorService}实例。
 	 */
 	public void setThreadPool(ExecutorService threadPool) {
 		this.threadPool = threadPool;
 	}
 
 	/**
-	 * Returns the current executor service used. By default,
-	 * Executors.newCachedThreadPool() is used.
+	 * 当前正在使用的ExecutorService<br>
+	 * 默认使用的Executors.newCachedThreadPool()
 	 * 
-	 * @return current executor service used
+	 * @return
 	 */
 	public ExecutorService getThreadPool() {
 		return threadPool;
 	}
 
 	/**
-	 * Get the default threading pool to be used for this HTTP client.
+	 * 获取用于此HTTP客户端的默认线程池。
 	 * 
-	 * @return The default threading pool to be used
+	 * @return 要使用的默认线程池
 	 */
 	protected ExecutorService getDefaultThreadPool() {
 		return Executors.newCachedThreadPool();
 	}
 
 	/**
-	 * Provided so it is easier for developers to provide custom
-	 * ThreadSafeClientConnManager implementation
+	 * 提供此方法<br>
+	 * 开发人员更容易提供自定义的ThreadSafeClientConnManager实现
 	 * 
 	 * @param schemeRegistry
-	 *            SchemeRegistry, usually provided by
-	 *            {@link #getDefaultSchemeRegistry(boolean, int, int)}
+	 *            SchemeRegistry通常由
+	 *            {@link #getDefaultSchemeRegistry(boolean, int, int)}提供
 	 * @param httpParams
 	 *            BasicHttpParams
-	 * @return ClientConnectionManager instance
+	 * @return ClientConnectionManager实例
 	 */
 	protected ClientConnectionManager createConnectionManager(
 			SchemeRegistry schemeRegistry, BasicHttpParams httpParams) {
@@ -537,20 +530,19 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Simple interface method, to enable or disable redirects. If you set
-	 * manually RedirectHandler on underlying HttpClient, effects of this method
-	 * will be canceled.
+	 * 简单的接口方法，启用或禁用重定向<br>
+	 * 如果在底层HttpClient上手动设置RedirectHandler，则此方法的效果将被取消。
 	 * <p>
 	 * &nbsp;
 	 * </p>
-	 * Default setting is to disallow redirects.
+	 * 默认设置是允许重定向。
 	 * 
 	 * @param enableRedirects
-	 *            boolean
+	 *            使重定向
 	 * @param enableRelativeRedirects
-	 *            boolean
+	 *            使相对重定向
 	 * @param enableCircularRedirects
-	 *            boolean
+	 *            使循环重定向
 	 */
 	public void setEnableRedirects(final boolean enableRedirects,
 			final boolean enableRelativeRedirects,
@@ -564,12 +556,12 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Circular redirects are enabled by default
+	 * 循环重定向默认启用
 	 * 
 	 * @param enableRedirects
-	 *            boolean
+	 *            使重定向
 	 * @param enableRelativeRedirects
-	 *            boolean
+	 *            使相对重定向
 	 * @see #setEnableRedirects(boolean, boolean, boolean)
 	 */
 	public void setEnableRedirects(final boolean enableRedirects,
@@ -579,7 +571,7 @@ public class AsyncHttpClient {
 
 	/**
 	 * @param enableRedirects
-	 *            boolean
+	 *            使重定向
 	 * @see #setEnableRedirects(boolean, boolean, boolean)
 	 */
 	public void setEnableRedirects(final boolean enableRedirects) {
@@ -587,11 +579,10 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Allows you to set custom RedirectHandler implementation, if the default
-	 * provided doesn't suit your needs
+	 * 允许您设置自定义的RedirectHandler实现，如果默认设置不适合你的需要
 	 * 
 	 * @param customRedirectHandler
-	 *            RedirectHandler instance
+	 *            RedirectHandler实例
 	 * @see com.loopj.android.http.MyRedirectHandler
 	 */
 	public void setRedirectHandler(final RedirectHandler customRedirectHandler) {
@@ -599,31 +590,29 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets the User-Agent header to be sent with each request. By default,
-	 * "Android Asynchronous Http Client/VERSION
-	 * (https://loopj.com/android-async-http/)" is used.
+	 * 给每个请求设置User-Agent header<br>
+	 * 默认为"Android Asynchronous Http Client/VERSION (https://loopj.com/android-async-http/)"
 	 * 
 	 * @param userAgent
-	 *            the string to use in the User-Agent header.
 	 */
 	public void setUserAgent(String userAgent) {
 		HttpProtocolParams.setUserAgent(this.httpClient.getParams(), userAgent);
 	}
 
 	/**
-	 * Returns current limit of parallel connections
+	 * 返回当前并行连接数
 	 * 
-	 * @return maximum limit of parallel connections, default is 10
+	 * @return 并行连接的最大限制，默认为10
 	 */
 	public int getMaxConnections() {
 		return maxConnections;
 	}
 
 	/**
-	 * Sets maximum limit of parallel connections
+	 * 设置并行连接的最大值
 	 * 
 	 * @param maxConnections
-	 *            maximum parallel connections, must be at least 1
+	 *            最大并行连接数必须至少为1
 	 */
 	public void setMaxConnections(int maxConnections) {
 		if (maxConnections < 1)
@@ -635,11 +624,11 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Set both the connection and socket timeouts. By default, both are set to
-	 * 10 seconds.
+	 * 设置connection和socket超时<br>
+	 * 默认情况下，两者都设置为10秒。
 	 * 
 	 * @param value
-	 *            the connect/socket timeout in milliseconds, at least 1 second
+	 *            connect/socket超时（单位:毫秒），至少1秒
 	 * @see #setConnectTimeout(int)
 	 * @see #setResponseTimeout(int)
 	 */
@@ -650,22 +639,19 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Returns current connection timeout limit (milliseconds). By default, this
-	 * is set to 10 seconds.
+	 * 返回当前connection超时限制（毫秒）。 默认设置为10秒。
 	 * 
-	 * @return Connection timeout limit in milliseconds
+	 * @return
 	 */
 	public int getConnectTimeout() {
 		return connectTimeout;
 	}
 
 	/**
-	 * Set connection timeout limit (milliseconds). By default, this is set to
-	 * 10 seconds.
+	 * 设置connection超时限制（毫秒）。 默认设置为10秒。
 	 * 
 	 * @param value
-	 *            Connection timeout in milliseconds, minimal value is 1000 (1
-	 *            second).
+	 *            connect超时（单位:毫秒），至少1秒
 	 */
 	public void setConnectTimeout(int value) {
 		connectTimeout = value < 1000 ? DEFAULT_SOCKET_TIMEOUT : value;
@@ -675,22 +661,21 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Returns current response timeout limit (milliseconds). By default, this
-	 * is set to 10 seconds.
+	 * 返回response超时<br>
+	 * 默认为10秒。
 	 * 
-	 * @return Response timeout limit in milliseconds
+	 * @return
 	 */
 	public int getResponseTimeout() {
 		return responseTimeout;
 	}
 
 	/**
-	 * Set response timeout limit (milliseconds). By default, this is set to 10
-	 * seconds.
+	 * 设置response超时<br>
+	 * 默认为10秒。
 	 * 
 	 * @param value
-	 *            Response timeout in milliseconds, minimal value is 1000 (1
-	 *            second).
+	 *            Response超时（单位:毫秒），至少1秒
 	 */
 	public void setResponseTimeout(int value) {
 		responseTimeout = value < 1000 ? DEFAULT_SOCKET_TIMEOUT : value;
@@ -699,12 +684,12 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets the Proxy by it's hostname and port
+	 * 通过hostname和port设置Proxy
 	 * 
 	 * @param hostname
 	 *            the hostname (IP or DNS name)
 	 * @param port
-	 *            the port number. -1 indicates the scheme default port.
+	 *            the port number. -1表示使用默认端口
 	 */
 	public void setProxy(String hostname, int port) {
 		final HttpHost proxy = new HttpHost(hostname, port);
@@ -713,16 +698,16 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets the Proxy by it's hostname,port,username and password
+	 * 通过hostname,port,username和password设置Proxy
 	 * 
 	 * @param hostname
 	 *            the hostname (IP or DNS name)
 	 * @param port
-	 *            the port number. -1 indicates the scheme default port.
+	 *            the port number. -1表示使用默认端口
 	 * @param username
-	 *            the username
+	 *            the 用户名
 	 * @param password
-	 *            the password
+	 *            the 密码
 	 */
 	public void setProxy(String hostname, int port, String username,
 			String password) {
@@ -735,11 +720,10 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets the SSLSocketFactory to user when making requests. By default, a
-	 * new, default SSLSocketFactory is used.
+	 * 在发出请求时将SSLSocketFactory设置为用户。 默认情况下，使用一个新的默认SSLSocketFactory。
 	 * 
 	 * @param sslSocketFactory
-	 *            the socket factory to use for https requests.
+	 *            sslSocketFactory用于https requests.
 	 */
 	public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
 		this.httpClient.getConnectionManager().getSchemeRegistry()
@@ -747,12 +731,12 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets the maximum number of retries and timeout for a particular Request.
+	 * 设置特定请求的最大重试次数和超时时间。
 	 * 
 	 * @param retries
-	 *            maximum number of retries per request
+	 *            每个请求的最大重试次数
 	 * @param timeout
-	 *            sleep between retries in milliseconds
+	 *            以毫秒为单位重试之间休眠时长
 	 */
 	public void setMaxRetriesAndTimeout(int retries, int timeout) {
 		this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries,
@@ -760,59 +744,57 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Will, before sending, remove all headers currently present in
-	 * AsyncHttpClient instance, which applies on all requests this client makes
+	 * 在发送之前，将删除AsyncHttpClient实例中当前存在的所有标头，适用于此客户端所有请求
 	 */
 	public void removeAllHeaders() {
 		clientHeaderMap.clear();
 	}
 
 	/**
-	 * Sets headers that will be added to all requests this client makes (before
-	 * sending).
+	 * 设置将添加到此客户端所做的所有请求（发送前）的头文件。
 	 * 
 	 * @param header
-	 *            the name of the header
+	 *            请求头名称
 	 * @param value
-	 *            the contents of the header
+	 *            请求头值
 	 */
 	public void addHeader(String header, String value) {
 		clientHeaderMap.put(header, value);
 	}
 
 	/**
-	 * Remove header from all requests this client makes (before sending).
+	 * 从客户端所发出的所有请求中删除头文件（发送前）。
 	 * 
 	 * @param header
-	 *            the name of the header
+	 *            这个请求头的名称
 	 */
 	public void removeHeader(String header) {
 		clientHeaderMap.remove(header);
 	}
 
 	/**
-	 * Sets basic authentication for the request. Uses AuthScope.ANY. This is
-	 * the same as setBasicAuth('username','password',AuthScope.ANY)
+	 * 设置请求的基本身份验证。 使用AuthScope.ANY<br>
+	 * 这与setBasicAuth('username','password',AuthScope.ANY)相同
 	 * 
 	 * @param username
-	 *            Basic Auth username
+	 *            基本认证用户名
 	 * @param password
-	 *            Basic Auth password
+	 *            基本认证密码
 	 */
 	public void setBasicAuth(String username, String password) {
 		setBasicAuth(username, password, false);
 	}
 
 	/**
-	 * Sets basic authentication for the request. Uses AuthScope.ANY. This is
-	 * the same as setBasicAuth('username','password',AuthScope.ANY)
+	 * 设置请求的基本身份验证。 使用AuthScope.ANY<br>
+	 * 这与setBasicAuth('username','password',AuthScope.ANY)相同
 	 * 
 	 * @param username
-	 *            Basic Auth username
+	 *            基本认证用户名
 	 * @param password
-	 *            Basic Auth password
+	 *            基本认证密码
 	 * @param preemptive
-	 *            sets authorization in preemptive manner
+	 *            以抢先的(preemptive)方式设定授权
 	 */
 	public void setBasicAuth(String username, String password,
 			boolean preemptive) {
@@ -820,15 +802,14 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets basic authentication for the request. You should pass in your
-	 * AuthScope for security. It should be like this
-	 * setBasicAuth("username","password", new
-	 * AuthScope("host",port,AuthScope.ANY_REALM))
+	 * 设置请求的基本身份验证<br>
+	 * 为了安全起见，您应该传入您的AuthScope<br>
+	 * 它应该像这样setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
 	 * 
 	 * @param username
-	 *            Basic Auth username
+	 *            基本认证用户名
 	 * @param password
-	 *            Basic Auth password
+	 *            基本认证密码
 	 * @param scope
 	 *            - an AuthScope object
 	 */
@@ -837,19 +818,18 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets basic authentication for the request. You should pass in your
-	 * AuthScope for security. It should be like this
-	 * setBasicAuth("username","password", new
-	 * AuthScope("host",port,AuthScope.ANY_REALM))
+	 * 设置请求的基本身份验证<br>
+	 * 为了安全起见，您应该传入您的AuthScope<br>
+	 * 它应该像这样setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
 	 * 
 	 * @param username
-	 *            Basic Auth username
+	 *            基本认证用户名
 	 * @param password
-	 *            Basic Auth password
+	 *            基本认证密码
 	 * @param scope
-	 *            an AuthScope object
+	 *            - an AuthScope object
 	 * @param preemptive
-	 *            sets authorization in preemptive manner
+	 *            以抢先的(preemptive)方式设定授权
 	 */
 	public void setBasicAuth(String username, String password, AuthScope scope,
 			boolean preemptive) {
@@ -869,13 +849,12 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Sets HttpRequestInterceptor which handles authorization in preemptive
-	 * way, as workaround you can use call
-	 * `AsyncHttpClient.addHeader("Authorization"
-	 * ,"Basic base64OfUsernameAndPassword==")`
+	 * 设置以抢占方式处理授权的HttpRequestInterceptor<br>
+	 * 作为解决方法，可以使用调用
+	 * `AsyncHttpClient.addHeader("Authorization" ,"Basic base64OfUsernameAndPassword==")`
 	 * 
 	 * @param isPreemptive
-	 *            whether the authorization is processed in preemptive way
+	 *            授权是否以抢先的方式处理
 	 */
 	public void setAuthenticationPreemptive(boolean isPreemptive) {
 		if (isPreemptive) {
@@ -888,28 +867,25 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Removes previously set auth credentials
+	 * 删除以前设置的身份验证凭据
 	 */
 	public void clearCredentialsProvider() {
 		this.httpClient.getCredentialsProvider().clear();
 	}
 
 	/**
-	 * Cancels any pending (or potentially active) requests associated with the
-	 * passed Context.
+	 * 取消与传递过来的指定Context相关联的任何待处理（或潜在的活动）请求。
 	 * <p>
 	 * &nbsp;
 	 * </p>
-	 * <b>Note:</b> This will only affect requests which were created with a
-	 * non-null android Context. This method is intended to be used in the
-	 * onDestroy method of your android activities to destroy all requests which
-	 * are no longer required.
+	 * <b>Note:</b> 
+	 * 这只会影响使用非空的Android上下文创建的请求。 <br>
+	 * 该方法旨在用于您的Android活动的onDestroy方法，以销毁不再需要的所有请求。
 	 * 
 	 * @param context
-	 *            the android Context instance associated to the request.
+	 *            与android Context实例关联的请求
 	 * @param mayInterruptIfRunning
-	 *            specifies if active requests should be cancelled along with
-	 *            pending requests.
+	 *            指定活动请求是否应与挂起的请求一起取消。
 	 */
 	public void cancelRequests(final Context context,
 			final boolean mayInterruptIfRunning) {
@@ -944,18 +920,16 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Cancels all pending (or potentially active) requests.
+	 * 取消所有待处理（或潜在的活动）请求。
 	 * <p>
 	 * &nbsp;
 	 * </p>
-	 * <b>Note:</b> This will only affect requests which were created with a
-	 * non-null android Context. This method is intended to be used in the
-	 * onDestroy method of your android activities to destroy all requests which
-	 * are no longer required.
+	 * <b>Note:</b>
+	 * 这只会影响使用非空的Android上下文创建的请求。 <br>
+	 * 该方法旨在用于您的Android活动的onDestroy方法，以销毁不再需要的所有请求。
 	 * 
 	 * @param mayInterruptIfRunning
-	 *            specifies if active requests should be cancelled along with
-	 *            pending requests.
+	 *            指定活动请求是否应与挂起的请求一起取消。
 	 */
 	public void cancelAllRequests(boolean mayInterruptIfRunning) {
 		for (List<RequestHandle> requestList : requestMap.values()) {
@@ -969,15 +943,13 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Allows you to cancel all requests currently in queue or running, by set
-	 * TAG, if passed TAG is null, will not attempt to cancel any requests, if
-	 * TAG is null on RequestHandle, it cannot be canceled by this call
+	 * 允许您取消当前在队列或正在运行的所有请求，通过设置TAG，如果TAG为null，则不会尝试取消任何请求，如果TAG在RequestHandle为空
+	 * ，则无法通过此呼叫取消
 	 * 
 	 * @param TAG
-	 *            TAG to be matched in RequestHandle
+	 *            TAG要在RequestHandle中匹配
 	 * @param mayInterruptIfRunning
-	 *            specifies if active requests should be cancelled along with
-	 *            pending requests.
+	 *            指定活动请求是否应与挂起的请求一起取消。
 	 */
 	public void cancelRequestsByTAG(Object TAG, boolean mayInterruptIfRunning) {
 		if (TAG == null) {
@@ -998,13 +970,13 @@ public class AsyncHttpClient {
 	// [+] HTTP HEAD
 
 	/**
-	 * Perform a HTTP HEAD request, without any parameters.
+	 * 执行HTTP HEAD请求，没有任何参数。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle head(String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1012,15 +984,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP HEAD request with parameters.
+	 * 使用参数执行HTTP HEAD请求。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional HEAD parameters to send with the request.
+	 *            额外的HEAD参数要与请求一起发送。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle head(String url, RequestParams params,
 			ResponseHandlerInterface responseHandler) {
@@ -1028,16 +1000,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP HEAD request without any parameters and track the Android
-	 * Context which initiated the request.
+	 * 执行没有任何参数的HTTP HEAD请求，并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle head(Context context, String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1045,18 +1016,17 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP HEAD request and track the Android Context which initiated
-	 * the request.
+	 * 执行HTTP HEAD请求并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional HEAD parameters to send with the request.
+	 *            额外的HEAD参数要与请求一起发送。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle head(Context context, String url,
 			RequestParams params, ResponseHandlerInterface responseHandler) {
@@ -1066,20 +1036,19 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP HEAD request and track the Android Context which initiated
-	 * the request with customized headers
+	 * 执行HTTP HEAD请求并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            Context to execute request against
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set headers only for this request
+	 *            仅为此请求设置请求头
 	 * @param params
-	 *            additional HEAD parameters to send with the request.
+	 *            额外的HEAD参数要与请求一起发送。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle head(Context context, String url, Header[] headers,
 			RequestParams params, ResponseHandlerInterface responseHandler) {
@@ -1095,13 +1064,13 @@ public class AsyncHttpClient {
 	// [+] HTTP GET
 
 	/**
-	 * Perform a HTTP GET request, without any parameters.
+	 * 执行HTTP GET请求，没有任何参数。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle get(String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1109,15 +1078,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP GET request with parameters.
+	 * 使用参数执行HTTP GET请求。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional GET parameters to send with the request.
+	 *            额外的GET参数要与请求一起发送。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle get(String url, RequestParams params,
 			ResponseHandlerInterface responseHandler) {
@@ -1125,16 +1094,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP GET request without any parameters and track the Android
-	 * Context which initiated the request.
+	 * 执行没有任何参数的HTTP GET请求，并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle get(Context context, String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1142,18 +1110,17 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP GET request and track the Android Context which initiated
-	 * the request.
+	 * 执行HTTP GET请求并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional GET parameters to send with the request.
+	 *            额外的GET参数要与请求一起发送。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle get(Context context, String url, RequestParams params,
 			ResponseHandlerInterface responseHandler) {
@@ -1163,20 +1130,19 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP GET request and track the Android Context which initiated
-	 * the request with customized headers
+	 * 执行HTTP GET请求，并跟踪使用自定义请求头启动请求的Android上下文
 	 * 
 	 * @param context
-	 *            Context to execute request against
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set headers only for this request
+	 *            只为此请求设置请求头
 	 * @param params
-	 *            additional GET parameters to send with the request.
+	 *            额外的GET参数要与请求一起发送。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle get(Context context, String url, Header[] headers,
 			RequestParams params, ResponseHandlerInterface responseHandler) {
@@ -1189,25 +1155,22 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP GET request and track the Android Context which initiated
-	 * the request.
+	 * 执行HTTP GET请求并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param entity
-	 *            a raw {@link org.apache.http.HttpEntity} to send with the
-	 *            request, for example, use this to send string/json/xml
-	 *            payloads to a server by passing a
-	 *            {@link org.apache.http.entity.StringEntity}.
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response ha ndler instance that should handle the
-	 *            response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle get(Context context, String url, HttpEntity entity,
 			String contentType, ResponseHandlerInterface responseHandler) {
@@ -1223,13 +1186,13 @@ public class AsyncHttpClient {
 	// [+] HTTP POST
 
 	/**
-	 * Perform a HTTP POST request, without any parameters.
+	 * 执行HTTP POST请求，没有任何参数。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle post(String url,
 			ResponseHandlerInterface responseHandler) {
@@ -1237,15 +1200,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP POST request with parameters.
+	 * 使用参数执行HTTP POST请求。
 	 * 
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional POST parameters or files to send with the request.
+	 *            额外的POST参数或与请求一起发送的文件。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle post(String url, RequestParams params,
 			ResponseHandlerInterface responseHandler) {
@@ -1253,18 +1216,17 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP POST request and track the Android Context which initiated
-	 * the request.
+	 * 执行HTTP POST请求并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param params
-	 *            additional POST parameters or files to send with the request.
+	 *            额外的POST参数或与请求一起发送的文件。
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle post(Context context, String url,
 			RequestParams params, ResponseHandlerInterface responseHandler) {
@@ -1273,25 +1235,22 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP POST request and track the Android Context which initiated
-	 * the request.
+	 * 执行HTTP POST请求并跟踪启动请求的Android上下文。
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param entity
-	 *            a raw {@link org.apache.http.HttpEntity} to send with the
-	 *            request, for example, use this to send string/json/xml
-	 *            payloads to a server by passing a
-	 *            {@link org.apache.http.entity.StringEntity}.
+	 *            一个原始的{@link org.apache.http.HttpEntity}来发送请求，<br>
+	 *            例如，使用它来通过传递一个{@link org.apache.http.entity.StringEntity}
+	 *            将string/json/xml有效载荷发送到服务器。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response ha ndler instance that should handle the
-	 *            response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle post(Context context, String url, HttpEntity entity,
 			String contentType, ResponseHandlerInterface responseHandler) {
@@ -1301,23 +1260,22 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Perform a HTTP POST request and track the Android Context which initiated
-	 * the request. Set headers only for this request
+	 * 执行HTTP POST请求并跟踪启动请求的Android上下文。 仅为此请求设置请求头
 	 * 
 	 * @param context
-	 *            the Android Context which initiated the request.
+	 *            发起请求的Android上下文。
 	 * @param url
-	 *            the URL to send the request to.
+	 *            发送请求的URL。
 	 * @param headers
-	 *            set headers only for this request
+	 *            仅为此请求设置请求头
 	 * @param params
-	 *            additional POST parameters to send with the request.
+	 *            额外的POST参数或与请求一起发送的文件。
 	 * @param contentType
-	 *            the content type of the payload you are sending, for example
-	 *            application/json if sending a json payload.
+	 *            您要发送的有效载荷的内容类型，<br>
+	 *            例如，如果发送json有效载荷，则为application/json
 	 * @param responseHandler
-	 *            the response handler instance that should handle the response.
-	 * @return RequestHandle of future request process
+	 *            响应处理程序实例应该处理响应。
+	 * @return RequestHandle的未来请求process
 	 */
 	public RequestHandle post(Context context, String url, Header[] headers,
 			RequestParams params, String contentType,
@@ -1853,15 +1811,15 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Will encode url, if not disabled, and adds params on the end of it
+	 * 将编码url，如果没有禁用，并在其末尾添加参数
 	 * 
 	 * @param url
-	 *            String with URL, should be valid URL without params
+	 *            带有URL的字符串，应该是没有参数的有效URL
 	 * @param params
-	 *            RequestParams to be appended on the end of URL
+	 *            请求附加在URL结尾的RequestParams
 	 * @param shouldEncodeUrl
-	 *            whether url should be encoded (replaces spaces with %20)
-	 * @return encoded url if requested with params appended if any available
+	 *            是否应编码url（用％20替换空格）
+	 * @return 编码的url，如果需要，附加参数，如果有的话
 	 */
 	public static String getUrlWithQueryString(boolean shouldEncodeUrl,
 			String url, RequestParams params) {
@@ -1883,12 +1841,10 @@ public class AsyncHttpClient {
 		}
 
 		if (params != null) {
-			// Construct the query string and trim it, in case it
-			// includes any excessive white spaces.
+			// 构造查询字符串并修剪它，以防包含任何过多的空格。
 			String paramString = params.getParamString().trim();
 
-			// Only add the query string if it isn't empty and it
-			// isn't equal to '?'.
+			// 只有在查询字符串不为空并且不等于'?'时才添加。
 			if (!paramString.equals("") && !paramString.equals("?")) {
 				url += url.contains("?") ? "&" : "?";
 				url += paramString;
@@ -1953,15 +1909,16 @@ public class AsyncHttpClient {
 	}
 
 	/**
+	 * 返回包含请求声明中包含的RequestParams中的数据的HttpEntity。 <br>
+	 * 允许通过提供的ResponseHandler从上传传递进度
 	 * Returns HttpEntity containing data from RequestParams included with
 	 * request declaration. Allows also passing progress from upload via
 	 * provided ResponseHandler
 	 * 
 	 * @param params
-	 *            additional request params
+	 *            额外的请求参数
 	 * @param responseHandler
-	 *            ResponseHandlerInterface or its subclass to be notified on
-	 *            progress
+	 *            ResponseHandlerInterface或其子类进行通知
 	 */
 	private HttpEntity paramsToEntity(RequestParams params,
 			ResponseHandlerInterface responseHandler) {
