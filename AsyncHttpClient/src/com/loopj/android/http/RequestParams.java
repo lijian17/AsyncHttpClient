@@ -18,12 +18,6 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,12 +35,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
 /**
- * A collection of string request parameters or files to send along with requests made from an
- * {@link AsyncHttpClient} instance. <p>&nbsp;</p> For example: <p>&nbsp;</p>
+ * 与{@link AsyncHttpClient}实例发出的请求一起发送的字符串请求参数或文件的集合。
+ * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * RequestParams params = new RequestParams();
- * params.put("username", "james");
+ * params.put("username", "lijian");
  * params.put("password", "123456");
  * params.put("email", "my&#064;email.com");
  * params.put("profile_picture", new File("pic.jpg")); // Upload a File
@@ -91,8 +91,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * </pre>
  */
 public class RequestParams implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    public final static String APPLICATION_OCTET_STREAM =
+	public final static String APPLICATION_OCTET_STREAM =
             "application/octet-stream";
 
     public final static String APPLICATION_JSON =
@@ -100,7 +101,7 @@ public class RequestParams implements Serializable {
 
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
-    protected boolean forceMultipartEntity = false;
+    protected boolean forceMultipartEntity = false;// 强制多部分实体
     protected boolean useJsonStreamer;
     protected String elapsedFieldInJsonStreamer = "_elapsed";
     protected boolean autoCloseInputStreams;
@@ -112,10 +113,10 @@ public class RequestParams implements Serializable {
     protected String contentEncoding = HTTP.UTF_8;
 
     /**
-     * Sets content encoding for return value of {@link #getParamString()} and {@link
-     * #createFormEntity()} <p>&nbsp;</p> Default encoding is "UTF-8"
+     * 设置{@link #getParamString()}和{@link #createFormEntity()}的返回值的内容编码<br>
+     * 默认编码是"UTF-8"
      *
-     * @param encoding String constant from {@link HTTP}
+     * @param encoding 来自{@link HTTP}的字符串常量
      */
     public void setContentEncoding(final String encoding) {
         if (encoding != null) {
@@ -126,29 +127,26 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * If set to true will force Content-Type header to `multipart/form-data`
-     * even if there are not Files or Streams to be send
-     * <p>&nbsp;</p>
-     * Default value is false
+     * 如果设置为true，即使没有文件或流被发送，也会将Content-Type请求头强制为"multipart/form-data"<br>
+     * 默认false
      *
-     * @param force boolean, should declare content-type multipart/form-data even without files or streams present
+     * @param force
      */
     public void setForceMultipartEntityContentType(boolean force) {
         this.forceMultipartEntity = force;
     }
 
     /**
-     * Constructs a new empty {@code RequestParams} instance.
+     * 构造一个新的空的{@code RequestParams}实例。
      */
     public RequestParams() {
         this((Map<String, String>) null);
     }
 
     /**
-     * Constructs a new RequestParams instance containing the key/value string params from the
-     * specified map.
+     * 构造一个新的RequestParams实例，该实例包含指定map中的key/value字符串参数。
      *
-     * @param source the source key/value string map to add.
+     * @param source
      */
     public RequestParams(Map<String, String> source) {
         if (source != null) {
@@ -159,11 +157,10 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Constructs a new RequestParams instance and populate it with a single initial key/value
-     * string param.
+     * 构造一个新的RequestParams实例，并使用单个初始key/value字符串参数填充它。
      *
-     * @param key   the key name for the intial param.
-     * @param value the value string for the initial param.
+     * @param key
+     * @param value
      */
     public RequestParams(final String key, final String value) {
         this(new HashMap<String, String>() {{
@@ -172,12 +169,12 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Constructs a new RequestParams instance and populate it with multiple initial key/value
-     * string param.
+     * 构造一个新的RequestParams实例，并使用多个初始key/value字符串参数填充它。
      *
-     * @param keysAndValues a sequence of keys and values. Objects are automatically converted to
+     * @param keysAndValues 一系列键和值。 对象将自动转换为字符串（包括值为null）。
+     * a sequence of keys and values. Objects are automatically converted to
      *                      Strings (including the value {@code null}).
-     * @throws IllegalArgumentException if the number of arguments isn't even.
+     * @throws IllegalArgumentException 如果参数的个数不是成对出现抛异常
      */
     public RequestParams(Object... keysAndValues) {
         int len = keysAndValues.length;
@@ -191,10 +188,10 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds a key/value string pair to the request.
+     * 向请求添加key/value字符串对
      *
-     * @param key   the key name for the new param.
-     * @param value the value string for the new param.
+     * @param key
+     * @param value
      */
     public void put(String key, String value) {
         if (key != null && value != null) {
@@ -203,24 +200,24 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds files array to the request.
+     * 将文件数组添加到请求中。
      *
-     * @param key   the key name for the new param.
-     * @param files the files array to add.
-     * @throws FileNotFoundException if one of passed files is not found at time of assembling the requestparams into request
+     * @param key
+     * @param files
+     * @throws FileNotFoundException 如果在将请求数据组合到请求时没有找到传递的文件之一
      */
     public void put(String key, File files[]) throws FileNotFoundException {
         put(key, files, null, null);
     }
 
     /**
-     * Adds files array to the request with both custom provided file content-type and files name
+     * 使用自定义提供的文件content-type和文件名称将文件数组添加到请求
      *
-     * @param key            the key name for the new param.
-     * @param files          the files array to add.
-     * @param contentType    the content type of the file, eg. application/json
-     * @param customFileName file name to use instead of real file name
-     * @throws FileNotFoundException throws if wrong File argument was passed
+     * @param key            新参数的键名称。
+     * @param files          要添加的文件数组。
+     * @param contentType    文件的内容类型，例如:application/json
+     * @param customFileName 使用文件名而不是真正的文件名
+     * @throws FileNotFoundException 将引发错误的文件参数传递
      */
     public void put(String key, File files[], String contentType, String customFileName) throws FileNotFoundException {
 
@@ -237,48 +234,48 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds a file to the request.
+     * 向请求添加文件。
      *
-     * @param key  the key name for the new param.
-     * @param file the file to add.
-     * @throws FileNotFoundException throws if wrong File argument was passed
+     * @param key
+     * @param file
+     * @throws FileNotFoundException
      */
     public void put(String key, File file) throws FileNotFoundException {
         put(key, file, null, null);
     }
 
     /**
-     * Adds a file to the request with custom provided file name
+     * 使用自定义提供的文件名将文件添加到请求
      *
-     * @param key            the key name for the new param.
-     * @param file           the file to add.
-     * @param customFileName file name to use instead of real file name
-     * @throws FileNotFoundException throws if wrong File argument was passed
+     * @param key
+     * @param file
+     * @param customFileName 使用文件名而不是真正的文件名
+     * @throws FileNotFoundException
      */
     public void put(String key, String customFileName, File file) throws FileNotFoundException {
         put(key, file, null, customFileName);
     }
 
     /**
-     * Adds a file to the request with custom provided file content-type
+     * 使用自定义提供的文件content-type将请求文件添加到请求
      *
-     * @param key         the key name for the new param.
-     * @param file        the file to add.
-     * @param contentType the content type of the file, eg. application/json
-     * @throws FileNotFoundException throws if wrong File argument was passed
+     * @param key
+     * @param file
+     * @param contentType    文件的内容类型，例如:application/json
+     * @throws FileNotFoundException
      */
     public void put(String key, File file, String contentType) throws FileNotFoundException {
         put(key, file, contentType, null);
     }
 
     /**
-     * Adds a file to the request with both custom provided file content-type and file name
+     * 使用自定义提供的文件content-type和文件名将请求添加到请求中
      *
-     * @param key            the key name for the new param.
-     * @param file           the file to add.
-     * @param contentType    the content type of the file, eg. application/json
-     * @param customFileName file name to use instead of real file name
-     * @throws FileNotFoundException throws if wrong File argument was passed
+     * @param key
+     * @param file
+     * @param contentType    文件的内容类型，例如:application/json
+     * @param customFileName 使用文件名而不是真正的文件名
+     * @throws FileNotFoundException
      */
     public void put(String key, File file, String contentType, String customFileName) throws FileNotFoundException {
         if (file == null || !file.exists()) {
@@ -290,46 +287,46 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds an input stream to the request.
+     * 向请求添加输入流。
      *
-     * @param key    the key name for the new param.
-     * @param stream the input stream to add.
+     * @param key
+     * @param stream
      */
     public void put(String key, InputStream stream) {
         put(key, stream, null);
     }
 
     /**
-     * Adds an input stream to the request.
+     * 向请求添加输入流。
      *
-     * @param key    the key name for the new param.
-     * @param stream the input stream to add.
-     * @param name   the name of the stream.
+     * @param key
+     * @param stream
+     * @param name   流的名称
      */
     public void put(String key, InputStream stream, String name) {
         put(key, stream, name, null);
     }
 
     /**
-     * Adds an input stream to the request.
+     * 向请求添加输入流。
      *
-     * @param key         the key name for the new param.
-     * @param stream      the input stream to add.
-     * @param name        the name of the stream.
-     * @param contentType the content type of the file, eg. application/json
+     * @param key
+     * @param stream
+     * @param name   流的名称
+     * @param contentType    文件的内容类型，例如:application/json
      */
     public void put(String key, InputStream stream, String name, String contentType) {
         put(key, stream, name, contentType, autoCloseInputStreams);
     }
 
     /**
-     * Adds an input stream to the request.
+     * 向请求添加输入流。
      *
-     * @param key         the key name for the new param.
-     * @param stream      the input stream to add.
-     * @param name        the name of the stream.
-     * @param contentType the content type of the file, eg. application/json
-     * @param autoClose   close input stream automatically on successful upload
+     * @param key
+     * @param stream
+     * @param name   流的名称
+     * @param contentType    文件的内容类型，例如:application/json
+     * @param autoClose   上传成功后自动关闭输入流
      */
     public void put(String key, InputStream stream, String name, String contentType, boolean autoClose) {
         if (key != null && stream != null) {
@@ -338,10 +335,10 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds param with non-string value (e.g. Map, List, Set).
+     * 添加具有非字符串值的参数(e.g. Map, List, Set).
      *
-     * @param key   the key name for the new param.
-     * @param value the non-string value object for the new param.
+     * @param key
+     * @param value 新参数的非字符串值对象。
      */
     public void put(String key, Object value) {
         if (key != null && value != null) {
@@ -350,10 +347,10 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds a int value to the request.
+     * 向请求添加一个int值。
      *
-     * @param key   the key name for the new param.
-     * @param value the value int for the new param.
+     * @param key
+     * @param value
      */
     public void put(String key, int value) {
         if (key != null) {
@@ -362,10 +359,10 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds a long value to the request.
+     * 向请求添加一个long值。
      *
-     * @param key   the key name for the new param.
-     * @param value the value long for the new param.
+     * @param key
+     * @param value
      */
     public void put(String key, long value) {
         if (key != null) {
@@ -374,7 +371,7 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Adds string value to param which can have more than one value.
+     * 将字符串值添加到可以有多个值的参数中。
      *
      * @param key   the key name for the param, either existing or new.
      * @param value the value string for the new param.
@@ -396,9 +393,9 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Removes a parameter from the request.
+     * 从请求中删除参数。
      *
-     * @param key the key name for the parameter to remove.
+     * @param key
      */
     public void remove(String key) {
         urlParams.remove(key);
@@ -409,7 +406,7 @@ public class RequestParams implements Serializable {
     }
 
     /**
-     * Check if a parameter is defined.
+     * 检查参数是否定义
      *
      * @param key the key name for the parameter to check existence.
      * @return Boolean
@@ -474,44 +471,49 @@ public class RequestParams implements Serializable {
         return result.toString();
     }
 
+    /**
+     * 设置Http实体是可重复的
+     * @param flag
+     */
     public void setHttpEntityIsRepeatable(boolean flag) {
         this.isRepeatable = flag;
     }
 
+    /**
+     * 设置使用JsonStreamer
+     * @param flag
+     */
     public void setUseJsonStreamer(boolean flag) {
         this.useJsonStreamer = flag;
     }
 
     /**
-     * Sets an additional field when upload a JSON object through the streamer
-     * to hold the time, in milliseconds, it took to upload the payload. By
-     * default, this field is set to "_elapsed".
+     * 通过流传送上传JSON对象时设置一个附加字段，以保存上载有效载荷所需的时间（以毫秒为单位）。<br> 
+     * 默认情况下，此字段设置为“_elapsed”。
      * <p>&nbsp;</p>
-     * To disable this feature, call this method with null as the field value.
+     * 要禁用此功能，请将此方法调用为null作为字段值。
      *
-     * @param value field name to add elapsed time, or null to disable
+     * @param value 字段名称，以添加已用时间，或为空禁用
      */
     public void setElapsedFieldInJsonStreamer(String value) {
         this.elapsedFieldInJsonStreamer = value;
     }
 
     /**
-     * Set global flag which determines whether to automatically close input streams on successful
-     * upload.
+     * 设置全局标志，用于确定在成功上传时是否自动关闭输入流。
      *
-     * @param flag boolean whether to automatically close input streams
+     * @param flag 是否自动关闭输入流
      */
     public void setAutoCloseInputStreams(boolean flag) {
         autoCloseInputStreams = flag;
     }
 
     /**
-     * Returns an HttpEntity containing all request parameters.
+     * 返回包含所有请求参数的HttpEntity。
      *
-     * @param progressHandler HttpResponseHandler for reporting progress on entity submit
-     * @return HttpEntity resulting HttpEntity to be included along with {@link
-     * org.apache.http.client.methods.HttpEntityEnclosingRequestBase}
-     * @throws IOException if one of the streams cannot be read
+     * @param progressHandler HttpResponseHandler报告实体提交进度
+     * @return HttpEntity 结果HttpEntity与{@link org.apache.http.client.methods.HttpEntityEnclosingRequestBase}一起被包括在内
+     * @throws IOException 如果其中一个流不能被读取
      */
     public HttpEntity getEntity(ResponseHandlerInterface progressHandler) throws IOException {
         if (useJsonStreamer) {
@@ -523,6 +525,13 @@ public class RequestParams implements Serializable {
         }
     }
 
+    /**
+     * 创建JsonStream实体
+     * 
+     * @param progressHandler
+     * @return
+     * @throws IOException
+     */
     private HttpEntity createJsonStreamerEntity(ResponseHandlerInterface progressHandler) throws IOException {
         JsonStreamerEntity entity = new JsonStreamerEntity(
                 progressHandler,
@@ -561,6 +570,11 @@ public class RequestParams implements Serializable {
         return entity;
     }
 
+    /**
+     * 创建表单实体
+     * 
+     * @return
+     */
     private HttpEntity createFormEntity() {
         try {
             return new UrlEncodedFormEntity(getParamsList(), contentEncoding);
@@ -570,6 +584,13 @@ public class RequestParams implements Serializable {
         }
     }
 
+    /**
+     * 创建多部分实体
+     * 
+     * @param progressHandler
+     * @return
+     * @throws IOException
+     */
     private HttpEntity createMultipartEntity(ResponseHandlerInterface progressHandler) throws IOException {
         SimpleMultipartEntity entity = new SimpleMultipartEntity(progressHandler);
         entity.setIsRepeatable(isRepeatable);
@@ -611,6 +632,11 @@ public class RequestParams implements Serializable {
         return entity;
     }
 
+    /**
+     * 获取参数列表
+     * 
+     * @return
+     */
     protected List<BasicNameValuePair> getParamsList() {
         List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
@@ -623,6 +649,13 @@ public class RequestParams implements Serializable {
         return lparams;
     }
 
+    /**
+     * 获取参数列表
+     * 
+     * @param key
+     * @param value
+     * @return
+     */
     private List<BasicNameValuePair> getParamsList(String key, Object value) {
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         if (value instanceof Map) {
@@ -664,14 +697,27 @@ public class RequestParams implements Serializable {
         return params;
     }
 
+    /**
+     * 获取参数字符串
+     * 
+     * @return
+     */
     protected String getParamString() {
         return URLEncodedUtils.format(getParamsList(), contentEncoding);
     }
 
+    /**
+     * 文件包装
+     * 
+     * @author lijian
+     * @date 2017-7-27 下午10:04:49
+     */
     public static class FileWrapper implements Serializable {
-        public final File file;
+		private static final long serialVersionUID = 1L;
+		
+		public final File file;
         public final String contentType;
-        public final String customFileName;
+        public final String customFileName;// 自定义文件名
 
         public FileWrapper(File file, String contentType, String customFileName) {
             this.file = file;
@@ -680,7 +726,13 @@ public class RequestParams implements Serializable {
         }
     }
 
-    public static class StreamWrapper {
+	/**
+	 * 数据流包装
+	 * 
+	 * @author lijian
+	 * @date 2017-7-27 下午9:59:54
+	 */
+	public static class StreamWrapper {
         public final InputStream inputStream;
         public final String name;
         public final String contentType;

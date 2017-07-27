@@ -1896,9 +1896,6 @@ public class AsyncHttpClient {
 	/**
 	 * 返回包含请求声明中包含的RequestParams中的数据的HttpEntity。 <br>
 	 * 允许通过提供的ResponseHandler从上传传递进度
-	 * Returns HttpEntity containing data from RequestParams included with
-	 * request declaration. Allows also passing progress from upload via
-	 * provided ResponseHandler
 	 * 
 	 * @param params
 	 *            额外的请求参数
