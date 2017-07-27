@@ -1689,24 +1689,21 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Puts a new request in queue as a new thread in pool to be executed
+	 * 将队列中的新请求作为池中的新线程执行
 	 * 
 	 * @param client
-	 *            HttpClient to be used for request, can differ in single
-	 *            requests
+	 *            HttpClient用于请求，可以在单个请求中不同
 	 * @param contentType
-	 *            MIME body type, for POST and PUT requests, may be null
+	 *            用于POST和PUT请求的MIME体类型可以为null
 	 * @param context
-	 *            Context of Android application, to hold the reference of
-	 *            request
+	 *            Android应用程序的上下文，保存请求的引用
 	 * @param httpContext
-	 *            HttpContext in which the request will be executed
+	 *            HttpContext将请求执行
 	 * @param responseHandler
-	 *            ResponseHandler or its subclass to put the response into
+	 *            响应处理程序实例应该处理响应。
 	 * @param uriRequest
-	 *            instance of HttpUriRequest, which means it must be of
-	 *            HttpDelete, HttpPost, HttpGet, HttpPut, etc.
-	 * @return RequestHandle of future request process
+	 *            HttpUriRequest的实例，这意味着它必须是HttpDelete，HttpPost，HttpGet，HttpPut等。
+	 * @return RequestHandle的未来请求过程
 	 */
 	protected RequestHandle sendRequest(DefaultHttpClient client,
 			HttpContext httpContext, HttpUriRequest uriRequest,
@@ -1754,6 +1751,7 @@ public class AsyncHttpClient {
 			synchronized (requestMap) {
 				requestList = requestMap.get(context);
 				if (requestList == null) {
+					// LinkedList本身不是线程安全的，通过Collections.synchronizedList可以将其包装成一个线程安全的List
 					requestList = Collections
 							.synchronizedList(new LinkedList<RequestHandle>());
 					requestMap.put(context, requestList);
@@ -1839,16 +1837,19 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * Checks the InputStream if it contains GZIP compressed data
+	 * 检查InputStream是否包含GZIP压缩数据
 	 * 
 	 * @param inputStream
-	 *            InputStream to be checked
-	 * @return true or false if the stream contains GZIP compressed data
+	 *            待检查的InputStream数据
+	 * @return (true:包含；false:不包含)
 	 * @throws java.io.IOException
-	 *             if read from inputStream fails
+	 *             如果从inputStream读取失败
 	 */
 	public static boolean isInputStreamGZIPCompressed(
 			final PushbackInputStream inputStream) throws IOException {
+		// PushbackInputStream存在的意义就是允许我试探性的读取数据流，
+		// 如果不是我们想要的则返还回去，之所以能够这样，因为其内部维护了
+		// 一个pushback buffer缓冲区。构造函数可以指定返回的字节个数，
 		if (inputStream == null)
 			return false;
 
@@ -1945,12 +1946,11 @@ public class AsyncHttpClient {
 	}
 
 	/**
-	 * This horrible hack is required on Android, due to implementation of
-	 * BasicManagedEntity, which doesn't chain call consumeContent on underlying
-	 * wrapped HttpEntity
+	 * 由于执行了BasicManagedEntity，因此在Android上需要这种可怕的黑客攻击，
+	 * 它不会在底层的HttpEntity上链接调用consumeContent
 	 * 
 	 * @param entity
-	 *            HttpEntity, may be null
+	 *            HttpEntity，可能为null
 	 */
 	public static void endEntityViaReflection(HttpEntity entity) {
 		if (entity instanceof HttpEntityWrapper) {
