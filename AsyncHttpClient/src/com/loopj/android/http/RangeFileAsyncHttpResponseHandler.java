@@ -31,17 +31,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
+/**
+ * 断点续传（Content-Range设置起始位置以指示下载文件的那一段）
+ * 
+ * @author lijian-pc
+ * @date 2017-7-28 下午5:54:08
+ */
 public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpResponseHandler {
     private static final String LOG_TAG = "RangeFileAsyncHttpRH";
 
+    /** 当前 */
     private long current = 0;
+    /** 是否追加模式 */
     private boolean append = false;
 
     /**
-     * Obtains new RangeFileAsyncHttpResponseHandler and stores response in passed file
+     * 获取新的RangeFileAsyncHttpResponseHandler并将响应存储在传递的文件中
      *
-     * @param file File to store response within, must not be null
+     * @param file 文件存储响应内部，不能为null
      */
     public RangeFileAsyncHttpResponseHandler(File file) {
         super(file);
@@ -52,7 +59,7 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
         if (!Thread.currentThread().isInterrupted()) {
             StatusLine status = response.getStatusLine();
             if (status.getStatusCode() == HttpStatus.SC_REQUESTED_RANGE_NOT_SATISFIABLE) {
-                //already finished
+                // 已经完成了
                 if (!Thread.currentThread().isInterrupted())
                     sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), null);
             } else if (status.getStatusCode() >= 300) {
@@ -98,6 +105,11 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
         return null;
     }
 
+    /**
+     * 更新请求头
+     * 
+     * @param uriRequest
+     */
     public void updateRequestHeaders(HttpUriRequest uriRequest) {
         if (file.exists() && file.canWrite())
             current = file.length();
