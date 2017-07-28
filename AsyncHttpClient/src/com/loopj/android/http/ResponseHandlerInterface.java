@@ -124,7 +124,7 @@ public interface ResponseHandlerInterface {
     /**
      * 返回处理程序是异步还是同步
      *
-     * @return 如果ResponseHandler以同步模式运行，则为布尔值
+     * @return 如果ResponseHandler以同步模式运行，则返回true
      */
     boolean getUseSynchronousMode();
 

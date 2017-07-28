@@ -28,6 +28,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 文件异步Http响应Handler
+ * 
+ * @author lijian-pc
+ * @date 2017-7-28 下午4:17:44
+ */
 public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
 
     protected final File file;
@@ -37,39 +43,42 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     private static final String LOG_TAG = "FileAsyncHttpRH";
 
     /**
-     * Obtains new FileAsyncHttpResponseHandler and stores response in passed file
+     * 获取新的FileAsyncHttpResponseHandler并将响应存储在传递的文件中
      *
-     * @param file File to store response within, must not be null
+     * @param file 文件存储响应内部，不能为null
      */
     public FileAsyncHttpResponseHandler(File file) {
         this(file, false);
     }
 
     /**
-     * Obtains new FileAsyncHttpResponseHandler and stores response in passed file
+     * 获取新的FileAsyncHttpResponseHandler并将响应存储在传递的文件中
      *
-     * @param file   File to store response within, must not be null
-     * @param append whether data should be appended to existing file
+     * @param file 文件存储响应内部，不能为null
+     * @param append 数据是否应附加到现有文件
      */
     public FileAsyncHttpResponseHandler(File file, boolean append) {
         this(file, append, false);
     }
 
     /**
-     * Obtains new FileAsyncHttpResponseHandler and stores response in passed file
+     * 获取新的FileAsyncHttpResponseHandler并将响应存储在传递的文件中
      *
-     * @param file                     File to store response within, must not be null
-     * @param append                   whether data should be appended to existing file
-     * @param renameTargetFileIfExists whether target file should be renamed if it already exists
+     * @param file 文件存储响应内部，不能为null
+     * @param append 数据是否应附加到现有文件
+     * @param renameTargetFileIfExists 目标文件是否应该重命名，如果它已经存在
      */
     public FileAsyncHttpResponseHandler(File file, boolean append, boolean renameTargetFileIfExists) {
         super();
+        // 传入FileAsyncHttpResponseHandler构造函数的文件不能为null
         Utils.asserts(file != null, "File passed into FileAsyncHttpResponseHandler constructor must not be null");
         if (!file.isDirectory() && !file.getParentFile().isDirectory()) {
+        	// 无法为请求的文件位置创建父目录
             Utils.asserts(file.getParentFile().mkdirs(), "Cannot create parent directories for requested File location");
         }
         if (file.isDirectory()) {
             if (!file.mkdirs()) {
+            	// 无法为所请求的目录位置创建目录，可能不是问题
                 AsyncHttpClient.log.d(LOG_TAG, "Cannot create directories for requested Directory location, might not be a problem");
             }
         }
@@ -79,9 +88,9 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
-     * Obtains new FileAsyncHttpResponseHandler against context with target being temporary file
+     * 获取新的FileAsyncHttpResponseHandler与目标为临时文件的上下文
      *
-     * @param context Context, must not be null
+     * @param context 上下文，不能为null
      */
     public FileAsyncHttpResponseHandler(Context context) {
         super();
@@ -91,21 +100,22 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
-     * Attempts to delete file with stored response
+     * 尝试使用存储的响应删除文件
      *
-     * @return false if the file does not exist or is null, true if it was successfully deleted
+     * @return 如果文件不存在或为空，则为false，如果成功删除，则为true
      */
     public boolean deleteTargetFile() {
         return getTargetFile() != null && getTargetFile().delete();
     }
 
     /**
-     * Used when there is no file to be used when calling constructor
+     * 当调用构造函数时没有使用任何文件时使用
      *
-     * @param context Context, must not be null
-     * @return temporary file or null if creating file failed
+     * @param context 上下文，不能为null
+     * @return 临时文件，如果创建文件失败，则为null
      */
     protected File getTemporaryFile(Context context) {
+    	// 尝试创建临时文件而不具有上下文
         Utils.asserts(context != null, "Tried creating temporary file without having Context");
         try {
             return File.createTempFile("temp_", "_handled", context.getCacheDir());
@@ -116,19 +126,21 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
+     * 检索其中存储响应的File对象
      * Retrieves File object in which the response is stored
      *
-     * @return File file in which the response was to be stored
+     * @return File 要保存响应的文件
      */
     protected File getOriginalFile() {
+    	// 目标文件为空，致命！
         Utils.asserts(file != null, "Target file is null, fatal!");
         return file;
     }
 
     /**
-     * Retrieves File which represents response final location after possible renaming
+     * 检索可能重命名后代表响应最终位置的文件
      *
-     * @return File final target file
+     * @return File 最终目标文件
      */
     public File getTargetFile() {
         if (frontendFile == null) {
@@ -138,15 +150,16 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
-     * Will return File instance for file representing last URL segment in given folder.
-     * If file already exists and renameTargetFileIfExists was set as true, will try to find file
-     * which doesn't exist, naming template for such cases is "filename.ext" =&gt; "filename (%d).ext",
-     * or without extension "filename" =&gt; "filename (%d)"
+     * 将在给定文件夹中返回表示最后一个URL段的文件实例。 <br>
+     * 如果文件已经存在，并且renameTargetFileIfExists被设置为true，<br>
+     * 将尝试查找不存在的文件，这种情况下的命名模板为"filename.ext" =&gt; "filename (%d).ext",或不带扩展名"filename" =&gt; "filename (%d)"
      *
-     * @return File in given directory constructed by last segment of request URL
+     * @return 在给定目录中的文件，由最后一段请求URL构造
      */
     protected File getTargetFileByParsingURL() {
+    	// 目标文件不是目录，无法继续
         Utils.asserts(getOriginalFile().isDirectory(), "Target file is not a directory, cannot proceed");
+        // RequestURI为null，无法继续
         Utils.asserts(getRequestURI() != null, "RequestURI is null, cannot proceed");
         String requestURL = getRequestURI().toString();
         String filename = requestURL.substring(requestURL.lastIndexOf('/') + 1, requestURL.length());
@@ -175,13 +188,12 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
-     * Method to be overriden, receives as much of file as possible Called when the file is
-     * considered failure or if there is error when retrieving file
+     * 要覆盖的方法，尽可能多地接收文件当文件被认为是失败或在检索文件时是否有错误时被调用
      *
-     * @param statusCode http file status line
-     * @param headers    file http headers if any
+     * @param statusCode http文件状态行
+     * @param headers    如果有文件http头
      * @param throwable  returned throwable
-     * @param file       file in which the file is stored
+     * @param file       存储响应的文件
      */
     public abstract void onFailure(int statusCode, Header[] headers, Throwable throwable, File file);
 
@@ -191,11 +203,11 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
-     * Method to be overriden, receives as much of response as possible
+     * 要被覆盖的方法尽可能多地收到响应
      *
-     * @param statusCode http response status line
-     * @param headers    response http headers if any
-     * @param file       file in which the response is stored
+     * @param statusCode http文件状态行
+     * @param headers    如果有文件http头
+     * @param file       存储响应的文件
      */
     public abstract void onSuccess(int statusCode, Header[] headers, File file);
 
@@ -209,7 +221,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
                 try {
                     byte[] tmp = new byte[BUFFER_SIZE];
                     int l, count = 0;
-                    // do not send messages if request has been cancelled
+                    // 如果请求已被取消，请不要发送消息
                     while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                         count += l;
                         buffer.write(tmp, 0, l);

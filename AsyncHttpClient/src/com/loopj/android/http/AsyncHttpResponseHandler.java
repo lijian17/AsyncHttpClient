@@ -35,16 +35,16 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 
 /**
- * 查看
- * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
- * {@link #onSuccess(int, org.apache.http.Header[], byte[])} method is designed to be anonymously
- * overridden with your own response handling code. <p>&nbsp;</p> Additionally, you can override the
- * {@link #onFailure(int, org.apache.http.Header[], byte[], Throwable)}, {@link #onStart()}, {@link
- * #onFinish()}, {@link #onRetry(int)} and {@link #onProgress(long, long)} methods as required.
+ * 用于拦截和处理使用{@link AsyncHttpClient}的请求的响应。 
+ * {@link #onSuccess(int, org.apache.http.Header[], byte[])}方法被设计为用您自己的响应处理代码进行匿名覆盖。
+ * <p>&nbsp;</p>
+ * 另外，您可以根据需要覆盖{@link #onFailure(int, org.apache.http.Header[], byte[], Throwable)}, {@link #onStart()}, 
+ * {@link #onFinish()}, {@link #onRetry(int)} and {@link #onProgress(long, long)}方法。
+ * 
  * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("https://www.google.com", new AsyncHttpResponseHandler() {
+ * client.get("https://www.baidu.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
  *     public void onStart() {
  *         // Initiated the request
@@ -56,9 +56,7 @@ import java.net.URI;
  *     }
  *
  *     &#064;Override
- *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable
- * error)
- * {
+ *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
  *         // Response failed :(
  *     }
  *
@@ -81,71 +79,81 @@ import java.net.URI;
  */
 @SuppressWarnings("ALL")
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
-
     private static final String LOG_TAG = "AsyncHttpRH";
 
+    /** 消息-成功 */
     protected static final int SUCCESS_MESSAGE = 0;
+    /** 消息-失败 */
     protected static final int FAILURE_MESSAGE = 1;
+    /** 消息-开始 */
     protected static final int START_MESSAGE = 2;
+    /** 消息-完成 */
     protected static final int FINISH_MESSAGE = 3;
+    /** 消息-进度 */
     protected static final int PROGRESS_MESSAGE = 4;
+    /** 消息-重试 */
     protected static final int RETRY_MESSAGE = 5;
+    /** 消息-取消 */
     protected static final int CANCEL_MESSAGE = 6;
 
+    /** 缓冲区大小 */
     protected static final int BUFFER_SIZE = 4096;
 
+    /** 默认编码 */
     public static final String DEFAULT_CHARSET = "UTF-8";
     public static final String UTF8_BOM = "\uFEFF";
+    /** 响应编码 */
     private String responseCharset = DEFAULT_CHARSET;
     private Handler handler;
+    /** 使用同步模式 */
     private boolean useSynchronousMode;
+    /** 使用线程池 */
     private boolean usePoolThread;
 
+    /** 请求URI */
     private URI requestURI = null;
     private Header[] requestHeaders = null;
     private Looper looper = null;
     private WeakReference<Object> TAG = new WeakReference<Object>(null);
 
     /**
-     * Creates a new AsyncHttpResponseHandler
+     * 创建一个新的AsyncHttpResponseHandler
      */
     public AsyncHttpResponseHandler() {
         this(null);
     }
 
     /**
-     * Creates a new AsyncHttpResponseHandler with a user-supplied looper. If
-     * the passed looper is null, the looper attached to the current thread will
-     * be used.
+     * 使用用户提供的looper创建一个新的AsyncHttpResponseHandler。 
+     * 如果传递的looper为null，则将使用附加到当前线程的looper。
      *
-     * @param looper The looper to work with
+     * @param looper
      */
     public AsyncHttpResponseHandler(Looper looper) {
         this.looper = looper == null ? Looper.myLooper() : looper;
 
-        // Use asynchronous mode by default.
+        // 默认使用异步模式。
         setUseSynchronousMode(false);
 
-        // Do not use the pool's thread to fire callbacks by default.
+        // 默认情况下，不要使用线程池的线程来触发回调。
         setUsePoolThread(false);
     }
 
     /**
-     * Creates a new AsyncHttpResponseHandler and decide whether the callbacks
-     * will be fired on current thread's looper or the pool thread's.
+     * 创建一个新的AsyncHttpResponseHandler，并决定是否在当前线程池looper或池线程上触发回调。
      *
-     * @param usePoolThread Whether to use the pool's thread to fire callbacks
+     * @param usePoolThread 是否使用池的线程来消除回调
      */
     public AsyncHttpResponseHandler(boolean usePoolThread) {
-        // Whether to use the pool's thread to fire callbacks.
+        // 是否使用池的线程来消除回调。
         setUsePoolThread(usePoolThread);
 
-        // When using the pool's thread, there's no sense in having a looper.
+        // 当使用pool的线程时，有一个looper是没有意义的。
         if (!getUsePoolThread()) {
-            // Use the current thread's looper.
+        	// 使用当前线程的looper
             this.looper = Looper.myLooper();
 
-            // Use asynchronous mode by default.
+            // 默认使用异步模式。
             setUseSynchronousMode(false);
         }
     }
@@ -181,7 +189,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     /**
-     * Avoid leaks by using a non-anonymous handler class.
+     * 避免使用非匿名handler泄漏。
      */
     private static class ResponderHandler extends Handler {
         private final AsyncHttpResponseHandler mResponder;
@@ -204,18 +212,18 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     @Override
     public void setUseSynchronousMode(boolean sync) {
-        // A looper must be prepared before setting asynchronous mode.
+    	// 设置异步模式前必须先准备好一个looper
         if (!sync && looper == null) {
             sync = true;
             AsyncHttpClient.log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
         }
 
-        // If using asynchronous mode.
+        // 如果使用异步模式。
         if (!sync && handler == null) {
-            // Create a handler on current thread to submit tasks
+        	// 创建当前线程handler用于提交任务
             handler = new ResponderHandler(this, looper);
         } else if (sync && handler != null) {
-            // TODO: Consider adding a flag to remove all queued messages.
+            // TODO: 考虑添加一个标志来删除所有排队的消息。
             handler = null;
         }
 
@@ -229,8 +237,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     @Override
     public void setUsePoolThread(boolean pool) {
-        // If pool thread is to be used, there's no point in keeping a reference
-        // to the looper and no need for a handler.
+    	// 如果要使用池线程，那么保存一个looper就没有必要了，也不需要一个handler。
         if (pool) {
             looper = null;
             handler = null;
@@ -240,9 +247,9 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     /**
-     * Sets the charset for the response string. If not set, the default is UTF-8.
+     * 设置响应字符串的字符集。 如果未设置，则默认为UTF-8。
      *
-     * @param charset to be used for the response string.
+     * @param charset
      * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
      */
     public void setCharset(final String charset) {
@@ -254,63 +261,63 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     /**
+     * 当请求进度时触发，覆盖自己的代码来处理
      * Fired when the request progress, override to handle in your own code
      *
-     * @param bytesWritten offset from start of file
-     * @param totalSize    total size of file
+     * @param bytesWritten 从文件开始偏移
+     * @param totalSize    文件总大小
      */
     public void onProgress(long bytesWritten, long totalSize) {
         AsyncHttpClient.log.v(LOG_TAG, String.format("Progress %d from %d (%2.0f%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100 : -1));
     }
 
     /**
-     * Fired when the request is started, override to handle in your own code
+     * 当请求启动时触发，覆盖自己的代码来处理
      */
     public void onStart() {
-        // default log warning is not necessary, because this method is just optional notification
+        // 默认的日志警告是不必要的，因为这个方法只是可选的通知
     }
 
     /**
-     * Fired in all cases when the request is finished, after both success and failure, override to
-     * handle in your own code
+     * 在请求完成后，在成功和失败之后，都会被触发，覆盖自己的代码来处理
      */
     public void onFinish() {
-        // default log warning is not necessary, because this method is just optional notification
+        // 默认的日志警告是不必要的，因为这个方法只是可选的通知
     }
 
     @Override
     public void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
-        // default action is to do nothing...
+        // 默认动作是什么都不做...
     }
 
     @Override
     public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
-        // default action is to do nothing...
+        // 默认动作是什么都不做...
     }
 
     /**
-     * Fired when a request returns successfully, override to handle in your own code
+     * 当请求成功返回时触发，重写以在您自己的代码中处理
      *
-     * @param statusCode   the status code of the response
-     * @param headers      return headers, if any
-     * @param responseBody the body of the HTTP response from the server
+     * @param statusCode   响应的状态代码
+     * @param headers      返回headers，如果有的话
+     * @param responseBody 来自服务器的HTTP响应的正文
      */
     public abstract void onSuccess(int statusCode, Header[] headers, byte[] responseBody);
 
     /**
-     * Fired when a request fails to complete, override to handle in your own code
+     * 当请求无法完成时触发，重写以处理您自己的代码
      *
-     * @param statusCode   return HTTP status code
-     * @param headers      return headers, if any
-     * @param responseBody the response body, if any
-     * @param error        the underlying cause of the failure
+     * @param statusCode   响应的状态代码
+     * @param headers      返回headers，如果有的话
+     * @param responseBody 来自服务器的HTTP响应的正文
+     * @param error        失败的根本原因
      */
     public abstract void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error);
 
     /**
-     * Fired when a retry occurs, override to handle in your own code
+     * 发生重试时触发，重写以处理您自己的代码
      *
-     * @param retryNo number of retry
+     * @param retryNo 重试次数
      */
     public void onRetry(int retryNo) {
         AsyncHttpClient.log.d(LOG_TAG, String.format("Request retry no. %d", retryNo));
@@ -360,7 +367,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         sendMessage(obtainMessage(CANCEL_MESSAGE, null));
     }
 
-    // Methods which emulate android's Handler and Message methods
+    // 模拟android Handler和Message方法的方法
     protected void handleMessage(Message message) {
         Object[] response;
 
@@ -420,35 +427,36 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     protected void sendMessage(Message msg) {
         if (getUseSynchronousMode() || handler == null) {
             handleMessage(msg);
-        } else if (!Thread.currentThread().isInterrupted()) { // do not send messages if request has been cancelled
+        } else if (!Thread.currentThread().isInterrupted()) { // 如果请求已被取消，请不要发送消息
             Utils.asserts(handler != null, "handler should not be null!");
             handler.sendMessage(msg);
         }
     }
 
     /**
-     * Helper method to send runnable into local handler loop
+     * Helper方法将runnable发送到本地handler loop
      *
-     * @param runnable runnable instance, can be null
+     * @param runnable runnable实例，可以为null
      */
     protected void postRunnable(Runnable runnable) {
         if (runnable != null) {
             if (getUseSynchronousMode() || handler == null) {
-                // This response handler is synchronous, run on current thread
+                // 该响应处理程序是同步的，在当前线程上运行
                 runnable.run();
             } else {
-                // Otherwise, run on provided handler
+            	// 否则，运行提供的handler
                 handler.post(runnable);
             }
         }
     }
 
     /**
+     * 从处理程序创建Message实例的Helper方法
      * Helper method to create Message instance from handler
      *
-     * @param responseMessageId   constant to identify Handler message
-     * @param responseMessageData object to be passed to message receiver
-     * @return Message instance, should not be null
+     * @param responseMessageId
+     * @param responseMessageData
+     * @return Message 实例，不应该为null
      */
     protected Message obtainMessage(int responseMessageId, Object responseMessageData) {
         return Message.obtain(handler, responseMessageId, responseMessageData);
@@ -456,12 +464,12 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     @Override
     public void sendResponseMessage(HttpResponse response) throws IOException {
-        // do not process if request has been cancelled
+        // 如果请求被取消，请不要处理
         if (!Thread.currentThread().isInterrupted()) {
             StatusLine status = response.getStatusLine();
             byte[] responseBody;
             responseBody = getResponseData(response.getEntity());
-            // additional cancellation check as getResponseData() can take non-zero time to process
+            // 额外的取消检查作为getResponseData()可以非零时间处理
             if (!Thread.currentThread().isInterrupted()) {
                 if (status.getStatusCode() >= 300) {
                     sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), responseBody, new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
@@ -473,11 +481,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     /**
-     * Returns byte array of response HttpEntity contents
+     * 返回的字节数组响应HttpEntity内容
      *
-     * @param entity can be null
-     * @return response entity body or null
-     * @throws java.io.IOException if reading entity or creating byte array failed
+     * @param entity 可以为null
+     * @return 响应实体或null
+     * @throws java.io.IOException 如果读取实体或创建字节数组失败
      */
     byte[] getResponseData(HttpEntity entity) throws IOException {
         byte[] responseBody = null;
@@ -486,6 +494,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
             if (instream != null) {
                 long contentLength = entity.getContentLength();
                 if (contentLength > Integer.MAX_VALUE) {
+                	// HTTP实体太大，无法缓冲在内存中
                     throw new IllegalArgumentException("HTTP entity too large to be buffered in memory");
                 }
                 int buffersize = (contentLength <= 0) ? BUFFER_SIZE : (int) contentLength;
@@ -495,7 +504,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                         byte[] tmp = new byte[BUFFER_SIZE];
                         long count = 0;
                         int l;
-                        // do not send messages if request has been cancelled
+                        // 如果请求已被取消，请不要发送消息
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                             count += l;
                             buffer.append(tmp, 0, l);
