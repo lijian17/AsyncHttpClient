@@ -23,15 +23,16 @@ import org.apache.http.Header;
 import java.io.UnsupportedEncodingException;
 
 /**
- * 查看
- * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
- * {@link #onSuccess(int, org.apache.http.Header[], String)} method is designed to be anonymously
- * overridden with your own response handling code. <p>&nbsp;</p> Additionally, you can override the
- * {@link #onFailure(int, org.apache.http.Header[], String, Throwable)}, {@link #onStart()}, and
- * {@link #onFinish()} methods as required. <p>&nbsp;</p> For example: <p>&nbsp;</p>
+ * 用于拦截和处理使用{@link AsyncHttpClient}的请求的响应。 
+ * {@link #onSuccess(int, org.apache.http.Header[], byte[])}方法被设计为用您自己的响应处理代码进行匿名覆盖。
+ * <p>&nbsp;</p>
+ * 另外，您可以根据需要覆盖{@link #onFailure(int, org.apache.http.Header[], byte[], Throwable)}, {@link #onStart()}和
+ * {@link #onFinish()}方法。
+ * 
+ * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("https://www.google.com", new TextHttpResponseHandler() {
+ * client.get("https://www.baidu.com", new TextHttpResponseHandler() {
  *     &#064;Override
  *     public void onStart() {
  *         // Initiated the request
@@ -59,16 +60,16 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final String LOG_TAG = "TextHttpRH";
 
     /**
-     * Creates new instance with default UTF-8 encoding
+     * 使用默认的UTF-8编码创建新实例
      */
     public TextHttpResponseHandler() {
         this(DEFAULT_CHARSET);
     }
 
     /**
-     * Creates new instance with given string encoding
+     * 用给定的字符串编码创建新的实例
      *
-     * @param encoding String encoding, see {@link #setCharset(String)}
+     * @param encoding 字符串编码, 查看 {@link #setCharset(String)}
      */
     public TextHttpResponseHandler(String encoding) {
         super();
@@ -76,21 +77,21 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     /**
-     * Called when request fails
+     * 当请求失败时调用
      *
-     * @param statusCode     http response status line
-     * @param headers        response headers if any
-     * @param responseString string response of given charset
-     * @param throwable      throwable returned when processing request
+     * @param statusCode     http响应状态行
+     * @param headers        响应头如果有的话
+     * @param responseString 给定字符集的字符串响应
+     * @param throwable      处理请求时返回的throwable
      */
     public abstract void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable);
 
     /**
-     * Called when request succeeds
+     * 当请求成功时调用
      *
-     * @param statusCode     http response status line
-     * @param headers        response headers if any
-     * @param responseString string response of given charset
+     * @param statusCode     http响应状态行
+     * @param headers        响应头如果有的话
+     * @param responseString 给定字符集的字符串响应
      */
     public abstract void onSuccess(int statusCode, Header[] headers, String responseString);
 
@@ -105,11 +106,11 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     /**
-     * Attempts to encode response bytes as string of set encoding
+     * 尝试将响应字节编码为集合编码的字符串
      *
-     * @param charset     charset to create string with
-     * @param stringBytes response bytes
-     * @return String of set encoding or null
+     * @param charset     字符集创建字符串
+     * @param stringBytes 响应字节
+     * @return 集合编码的字符串或null
      */
     public static String getResponseString(byte[] stringBytes, String charset) {
         try {

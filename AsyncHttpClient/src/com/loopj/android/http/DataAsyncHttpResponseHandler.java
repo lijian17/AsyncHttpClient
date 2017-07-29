@@ -26,7 +26,6 @@ import org.apache.http.util.ByteArrayBuffer;
 import java.io.IOException;
 import java.io.InputStream;
 
-@SuppressWarnings("ALL")
 public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final String LOG_TAG = "DataAsyncHttpRH";
 

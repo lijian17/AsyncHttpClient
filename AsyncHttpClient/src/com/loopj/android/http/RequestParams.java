@@ -90,6 +90,7 @@ import org.apache.http.protocol.HTTP;
  * client.post("https://myendpoint.com", params, responseHandler);
  * </pre>
  */
+@SuppressWarnings("all")
 public class RequestParams implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -162,7 +163,7 @@ public class RequestParams implements Serializable {
      * @param key
      * @param value
      */
-    public RequestParams(final String key, final String value) {
+	public RequestParams(final String key, final String value) {
         this(new HashMap<String, String>() {{
             put(key, value);
         }});
@@ -376,7 +377,7 @@ public class RequestParams implements Serializable {
      * @param key   the key name for the param, either existing or new.
      * @param value the value string for the new param.
      */
-    public void add(String key, String value) {
+	public void add(String key, String value) {
         if (key != null && value != null) {
             Object params = urlParamsWithObjects.get(key);
             if (params == null) {

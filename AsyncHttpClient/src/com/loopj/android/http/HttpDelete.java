@@ -23,10 +23,8 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import java.net.URI;
 
 /**
- * The current Android (API level 21) bundled version of the Apache Http Client does not implement
- * a HttpEntityEnclosingRequestBase type of HTTP DELETE method.
- * Until the Android version is updated this can serve in it's stead.
- * This implementation can and should go away when the official solution arrives.
+ * 目前的Android（API级别21）捆绑版本的Apache Http Client不实现HTTP DELETE方法的HttpEntityEnclosingRequestBase类型。 
+ * 直到Android版本更新，这可以在其中替代。 当官方解决方案到达时，这种实现可以而且应该消失。
  */
 public final class HttpDelete extends HttpEntityEnclosingRequestBase {
     public final static String METHOD_NAME = "DELETE";

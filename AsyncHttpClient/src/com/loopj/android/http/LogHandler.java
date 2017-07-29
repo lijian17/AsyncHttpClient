@@ -59,6 +59,7 @@ public class LogHandler implements LogInterface {
 	 * @param msg
 	 * @param t
 	 */
+	@SuppressWarnings("deprecation")
 	public void logWithThrowable(int logLevel, String tag, String msg,
 			Throwable t) {
 		if (isLoggingEnabled() && shouldLog(logLevel)) {

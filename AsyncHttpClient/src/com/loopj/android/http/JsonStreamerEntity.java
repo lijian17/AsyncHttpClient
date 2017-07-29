@@ -35,20 +35,20 @@ import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * HTTP entity to upload JSON data using streams. This has very low memory footprint; suitable for
- * uploading large files using base64 encoding.
+ * HTTP实体使用流上传JSON数据。 这具有非常低的内存占用; 适合使用base64编码上传大文件。
  */
 public class JsonStreamerEntity implements HttpEntity {
 
     private static final String LOG_TAG = "JsonStreamerEntity";
 
+    /** 不支持的操作异常 */
     private static final UnsupportedOperationException ERR_UNSUPPORTED =
             new UnsupportedOperationException("Unsupported operation in this implementation.");
 
-    // Size of the byte-array buffer used in I/O streams.
+    /** I/O流中使用的字节数组缓冲区的大小。 */
     private static final int BUFFER_SIZE = 4096;
 
-    // Buffer used for reading from input streams.
+    /** 用于从输入流读取的缓冲区  */
     private final byte[] buffer = new byte[BUFFER_SIZE];
 
     private static final byte[] JSON_TRUE = "true".getBytes();
@@ -68,14 +68,16 @@ public class JsonStreamerEntity implements HttpEntity {
                     AsyncHttpClient.HEADER_CONTENT_ENCODING,
                     AsyncHttpClient.ENCODING_GZIP);
 
-    // JSON data and associated meta-data to be uploaded.
+    /** 要上传的JSON数据和关联的元数据 */ 
     private final Map<String, Object> jsonParams = new HashMap<String, Object>();
 
-    // Whether to use gzip compression while uploading
+    /** 是否在上传时使用gzip压缩 */
     private final Header contentEncoding;
 
+    /** 已过场 */
     private final byte[] elapsedField;
 
+    /** 进度处理器 */
     private final ResponseHandlerInterface progressHandler;
 
     public JsonStreamerEntity(ResponseHandlerInterface progressHandler, boolean useGZipCompression, String elapsedField) {
@@ -87,25 +89,34 @@ public class JsonStreamerEntity implements HttpEntity {
     }
 
     /**
-     * Add content parameter, identified by the given key, to the request.
+     * 将由给定键标识的内容参数添加到请求中。
      *
-     * @param key   entity's name
-     * @param value entity's value (Scalar, FileWrapper, StreamWrapper)
+     * @param key   实体名称
+     * @param value 实体的值（Scalar，FileWrapper，StreamWrapper）
      */
     public void addPart(String key, Object value) {
         jsonParams.put(key, value);
     }
 
+    /**
+     * 是可重复的
+     */
     @Override
     public boolean isRepeatable() {
         return false;
     }
 
+    /**
+     * 是分块
+     */
     @Override
     public boolean isChunked() {
         return false;
     }
 
+    /**
+     * 是流式传输
+     */
     @Override
     public boolean isStreaming() {
         return false;
@@ -126,6 +137,9 @@ public class JsonStreamerEntity implements HttpEntity {
         return HEADER_JSON_CONTENT;
     }
 
+    /**
+     * 消费内容
+     */
     @Override
     public void consumeContent() throws IOException, UnsupportedOperationException {
     }
@@ -141,16 +155,15 @@ public class JsonStreamerEntity implements HttpEntity {
             throw new IllegalStateException("Output stream cannot be null.");
         }
 
-        // Record the time when uploading started.
+        // 记录上传开始的时间。
         long now = System.currentTimeMillis();
 
-        // Use GZIP compression when sending streams, otherwise just use
-        // a buffered output stream to speed things up a bit.
+        // 发送流时使用GZIP压缩，否则只需使用缓冲输出流即可加快速度。
         OutputStream os = contentEncoding != null
                 ? new GZIPOutputStream(out, BUFFER_SIZE)
                 : out;
 
-        // Always send a JSON object.
+        // 始终发送一个JSON对象。
         os.write('{');
 
         // Keys used by the HashMaps.
@@ -161,39 +174,39 @@ public class JsonStreamerEntity implements HttpEntity {
             int keysProcessed = 0;
             boolean isFileWrapper;
 
-            // Go over all keys and handle each's value.
+            // 转过所有的键并处理每个值。
             for (String key : keys) {
-                // Indicate that this key has been processed.
+                // 表示该key已被处理。
                 keysProcessed++;
 
                 try {
-                    // Evaluate the value (which cannot be null).
+                    // 评估值（不能为null）。
                     Object value = jsonParams.get(key);
 
-                    // Write the JSON object's key.
+                    // 编写JSON对象key。
                     os.write(escape(key));
                     os.write(':');
 
-                    // Bail out prematurely if value's null.
+                    // 如果值为null，则提前处理。
                     if (value == null) {
                         os.write(JSON_NULL);
                     } else {
-                        // Check if this is a FileWrapper.
+                        // 检查这是否是FileWrapper。
                         isFileWrapper = value instanceof RequestParams.FileWrapper;
 
-                        // If a file should be uploaded.
+                        // 如果一个文件应该被上传。
                         if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
-                            // All uploads are sent as an object containing the file's details.
+                            // 所有上传都作为包含文件详细信息的对象发送。
                             os.write('{');
 
-                            // Determine how to handle this entry.
+                            // 确定如何处理此条目。
                             if (isFileWrapper) {
                                 writeToFromFile(os, (RequestParams.FileWrapper) value);
                             } else {
                                 writeToFromStream(os, (RequestParams.StreamWrapper) value);
                             }
 
-                            // End the file's object and prepare for next one.
+                            // 结束文件的对象并准备下一个。
                             os.write('}');
                         } else if (value instanceof JsonValueInterface) {
                             os.write(((JsonValueInterface) value).getEscapedJsonValue());
@@ -216,19 +229,17 @@ public class JsonStreamerEntity implements HttpEntity {
                         }
                     }
                 } finally {
-                    // Separate each K:V with a comma, except the last one.
+                    // 用逗号分隔每个K:V，除了最后一个。
                     if (elapsedField != null || keysProcessed < keysCount) {
                         os.write(',');
                     }
                 }
             }
 
-            // Calculate how many milliseconds it took to upload the contents.
+            // 计算上传内容所需的毫秒数。
             long elapsedTime = System.currentTimeMillis() - now;
 
-            // Include the elapsed time taken to upload everything.
-            // This might be useful for somebody, but it serves us well since
-            // there will almost always be a ',' as the last sent character.
+            // 包括上传所有时间所花费的时间。这可能对某人有用，但它为我们服务，因为几乎总是作为最后一个发送的角色。
             if (elapsedField != null) {
                 os.write(elapsedField);
                 os.write(':');
@@ -238,10 +249,10 @@ public class JsonStreamerEntity implements HttpEntity {
             AsyncHttpClient.log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
         }
 
-        // Close the JSON object.
+        // 关闭JSON对象。
         os.write('}');
 
-        // Flush the contents up the stream.
+        // 将内容刷新流。
         os.flush();
         AsyncHttpClient.silentCloseOutputStream(os);
     }
@@ -249,24 +260,24 @@ public class JsonStreamerEntity implements HttpEntity {
     private void writeToFromStream(OutputStream os, RequestParams.StreamWrapper entry)
             throws IOException {
 
-        // Send the meta data.
+        // 发送元数据。
         writeMetaData(os, entry.name, entry.contentType);
 
         int bytesRead;
 
-        // Upload the file's contents in Base64.
+        // 上传文件的内容在Base64。
         Base64OutputStream bos =
                 new Base64OutputStream(os, Base64.NO_CLOSE | Base64.NO_WRAP);
 
-        // Read from input stream until no more data's left to read.
+        // 从输入流中读取数据，直到不再读取数据为止。
         while ((bytesRead = entry.inputStream.read(buffer)) != -1) {
             bos.write(buffer, 0, bytesRead);
         }
 
-        // Close the Base64 output stream.
+        // 关闭Base64 output stream.
         AsyncHttpClient.silentCloseOutputStream(bos);
 
-        // End the meta data.
+        // 结束元数据。
         endMetaData(os);
 
         // Close input stream.
@@ -332,15 +343,15 @@ public class JsonStreamerEntity implements HttpEntity {
         os.write('"');
     }
 
-    // Curtosy of Simple-JSON: https://goo.gl/XoW8RF
-    // Changed a bit to suit our needs in this class.
+    // 感谢 Simple-JSON: https://goo.gl/XoW8RF
+    // 改变了一点，以适应我们在这个class的需要。
     static byte[] escape(String string) {
-        // If it's null, just return prematurely.
+        // 如果它为null，提前返回。
         if (string == null) {
             return JSON_NULL;
         }
 
-        // Create a string builder to generate the escaped string.
+        // 创建一个字符串构建器来生成转义的字符串。
         StringBuilder sb = new StringBuilder(128);
 
         // Surround with quotations.
@@ -372,10 +383,11 @@ public class JsonStreamerEntity implements HttpEntity {
                     sb.append("\\t");
                     break;
                 default:
-                    // Reference: https://www.unicode.org/versions/Unicode5.1.0/
+                    // 参考: https://www.unicode.org/versions/Unicode5.1.0/
                     if ((ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
                         String intString = Integer.toHexString(ch);
                         sb.append("\\u");
+                        // 不足4位，前面补零
                         int intLength = 4 - intString.length();
                         for (int zero = 0; zero < intLength; zero++) {
                             sb.append('0');

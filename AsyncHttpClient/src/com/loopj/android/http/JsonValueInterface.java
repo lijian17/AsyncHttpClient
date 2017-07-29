@@ -19,19 +19,17 @@
 package com.loopj.android.http;
 
 /**
- * This interface is used to encapsulate JSON values that are handled entirely
- * by the app. For example, apps could manage any type of JSON on their own (and
- * not rely on {@link org.json.JSONArray} or {@link org.json.JSONObject} to
- * exchange data.
+ * 此接口用于封装由该应用完全处理JSON值。 
+ * 例如，应用程序可以自己管理任何类型的JSON（而不是依赖于{@link org.json.JSONArray}或{@link org.json.JSONObject}来交换数据。
  *
  * @author Noor Dawod {@literal <github@fineswap.com>}
  */
 public interface JsonValueInterface {
 
     /**
-     * Returns the escaped, ready-to-be used value of this encapsulated object.
+     * 返回此封装对象的转义的即可使用的值。
      *
-     * @return byte array holding the data to be used (as-is) in a JSON object
+     * @return byte 数组，保存JSON对象中要使用的数据（按原样）
      */
     byte[] getEscapedJsonValue();
 }

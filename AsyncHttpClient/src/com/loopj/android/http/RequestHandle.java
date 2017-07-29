@@ -23,7 +23,7 @@ import android.os.Looper;
 import java.lang.ref.WeakReference;
 
 /**
- * A Handle to an AsyncRequest which can be used to cancel a running request.
+ * 一个AsyncRequest的句柄，可用于取消正在运行的请求。
  */
 public class RequestHandle {
     private final WeakReference<AsyncHttpRequest> request;
@@ -33,20 +33,16 @@ public class RequestHandle {
     }
 
     /**
-     * Attempts to cancel this request. This attempt will fail if the request has already completed,
-     * has already been cancelled, or could not be cancelled for some other reason. If successful,
-     * and this request has not started when cancel is called, this request should never run. If the
-     * request has already started, then the mayInterruptIfRunning parameter determines whether the
-     * thread executing this request should be interrupted in an attempt to stop the request.
-     * <p>&nbsp;</p> After this method returns, subsequent calls to isDone() will always return
-     * true. Subsequent calls to isCancelled() will always return true if this method returned
-     * true. Subsequent calls to isDone() will return true either if the request got cancelled by
-     * this method, or if the request completed normally
+     * 尝试取消此请求。 如果请求已经完成，已经被取消或由于某种其他原因而无法取消，则此尝试将失败。 
+     * 如果成功，并且在请求取消时该请求尚未启动，则此请求不应该运行。 
+     * 如果请求已经启动，则mayInterruptIfRunning参数将确定执行该请求的线程是否应该被中断以试图停止请求。
+     * <p>&nbsp;</p> 
+     * 此方法返回后，对isDone()的后续调用将始终返回true。 
+     * 如果此方法返回true，则对isCancelled()的后续调用将始终返回true。 
+     * 如果请求被该方法取消，或者请求正常完成，则对isDone()的后续调用将返回true
      *
-     * @param mayInterruptIfRunning true if the thread executing this request should be interrupted;
-     *                              otherwise, in-progress requests are allowed to complete
-     * @return false if the request could not be cancelled, typically because it has already
-     * completed normally; true otherwise
+     * @param mayInterruptIfRunning 如果执行该请求的线程应该被中断，则为true; 否则，进行中的请求被允许完成
+     * @return 如果请求无法取消，则为false，通常是因为已经正常完成; 否则的话
      */
     public boolean cancel(final boolean mayInterruptIfRunning) {
         final AsyncHttpRequest _request = request.get();
@@ -58,8 +54,7 @@ public class RequestHandle {
                         _request.cancel(mayInterruptIfRunning);
                     }
                 }).start();
-                // Cannot reliably tell if the request got immediately canceled at this point
-                // we'll assume it got cancelled
+                // 在这一点上，如果请求已经立即取消，我们将不能可靠地告知我们将被取消
                 return true;
             } else {
                 return _request.cancel(mayInterruptIfRunning);
@@ -69,10 +64,9 @@ public class RequestHandle {
     }
 
     /**
-     * Returns true if this task completed. Completion may be due to normal termination, an
-     * exception, or cancellation -- in all of these cases, this method will return true.
+     * 如果此任务完成，则返回true。 完成可能是由于正常终止，异常或取消 - 在所有这些情况下，此方法将返回true。
      *
-     * @return true if this task completed
+     * @return 如果此任务完成，则为true
      */
     public boolean isFinished() {
         AsyncHttpRequest _request = request.get();
@@ -80,15 +74,19 @@ public class RequestHandle {
     }
 
     /**
-     * Returns true if this task was cancelled before it completed normally.
+     * 如果此任务在正常完成之前被取消，则返回true。
      *
-     * @return true if this task was cancelled before it completed
+     * @return 如果此任务在完成之前被取消，则为true
      */
     public boolean isCancelled() {
         AsyncHttpRequest _request = request.get();
         return _request == null || _request.isCancelled();
     }
 
+    /**
+     * 应该被垃圾收集
+     * @return
+     */
     public boolean shouldBeGarbageCollected() {
         boolean should = isCancelled() || isFinished();
         if (should)
@@ -97,10 +95,10 @@ public class RequestHandle {
     }
 
     /**
-     * Will set Object as TAG to underlying AsyncHttpRequest
+     * 将Object作为TAG设置为底层的AsyncHttpRequest
      *
-     * @param tag Object used as TAG to underlying AsyncHttpRequest
-     * @return this RequestHandle to allow fluid syntax
+     * @param tag 用作TAG的对象用于AsyncHttpRequest
+     * @return this RequestHandle允许流体语法
      */
     public RequestHandle setTag(Object tag) {
         AsyncHttpRequest _request = request.get();
@@ -110,9 +108,9 @@ public class RequestHandle {
     }
 
     /**
-     * Will return TAG of underlying AsyncHttpRequest if it's not already GCed
+     * 如果还没有GCed，将返回底层AsyncHttpRequest的TAG
      *
-     * @return Object TAG, can be null
+     * @return 对象TAG，可以为空
      */
     public Object getTag() {
         AsyncHttpRequest _request = request.get();

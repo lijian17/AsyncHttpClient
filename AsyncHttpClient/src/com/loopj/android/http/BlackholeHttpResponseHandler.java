@@ -4,11 +4,9 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 
 /**
- * Blank implementation of ResponseHandlerInterface, which ignores all contents returned by
- * remote HTTP endpoint, and discards all various log messages
+ * ResponseHandlerInterface的空白实现，它忽略远程HTTP端点返回的所有内容，并丢弃所有各种日志消息
  * <p>&nbsp;</p>
- * Use this implementation, if you deliberately want to ignore all response, because you cannot
- * pass null ResponseHandlerInterface into AsyncHttpClient implementation
+ * 使用此实现，如果您故意想忽略所有响应，因为您不能将null ResponseHandlerInterface传递给AsyncHttpClient实现
  */
 public class BlackholeHttpResponseHandler extends AsyncHttpResponseHandler {
 

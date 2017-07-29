@@ -20,6 +20,12 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Base64输出流
+ * 
+ * @author lijian
+ * @date 2017-7-29 下午6:59:58
+ */
 public class Base64OutputStream extends FilterOutputStream {
     private final Base64.Coder coder;
     private final int flags;
@@ -30,23 +36,21 @@ public class Base64OutputStream extends FilterOutputStream {
     private static byte[] EMPTY = new byte[0];
 
     /**
-     * Performs Base64 encoding on the data written to the stream, writing the encoded data to
-     * another OutputStream.
+     * 对写入流的数据执行Base64编码，将编码数据写入另一个OutputStream。
      *
-     * @param out   the OutputStream to write the encoded data to
-     * @param flags bit flags for controlling the encoder; see the constants in {@link Base64}
+     * @param out   OutputStream将编码数据写入
+     * @param flags 用于控制编码器的位标志; 请参阅{@link Base64}中的常量
      */
     public Base64OutputStream(OutputStream out, int flags) {
         this(out, flags, true);
     }
 
     /**
-     * Performs Base64 encoding or decoding on the data written to the stream, writing the
-     * encoded/decoded data to another OutputStream.
+     * 对写入流的数据执行Base64编码或解码，将编码/解码的数据写入另一个OutputStream。
      *
-     * @param out    the OutputStream to write the encoded data to
-     * @param flags  bit flags for controlling the encoder; see the constants in {@link Base64}
-     * @param encode true to encode, false to decode
+     * @param out    OutputStream将编码数据写入
+     * @param flags  用于控制编码器的位标志; 请参阅{@link Base64}中的常量
+     * @param encode true：编码, false：解码
      */
     public Base64OutputStream(OutputStream out, int flags, boolean encode) {
         super(out);
@@ -60,16 +64,15 @@ public class Base64OutputStream extends FilterOutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        // To avoid invoking the encoder/decoder routines for single
-        // bytes, we buffer up calls to write(int) in an internal
-        // byte array to transform them into writes of decently-sized
-        // arrays.
+    	// 为了避免为单个字节频繁调用编码器/解码器例程，
+    	// 我们缓冲在内部字节数组中写入（int）的调用，
+    	// 以将它们转换为正常大小的数组的写入。
 
         if (buffer == null) {
             buffer = new byte[1024];
         }
         if (bpos >= buffer.length) {
-            // internal buffer full; write it out.
+            // 内部缓冲区满; 把它写出来。
             internalWrite(buffer, 0, bpos, false);
             bpos = 0;
         }
@@ -77,8 +80,7 @@ public class Base64OutputStream extends FilterOutputStream {
     }
 
     /**
-     * Flush any buffered data from calls to write(int).  Needed before doing a write(byte[], int,
-     * int) or a close().
+     * 在write(byte[], int, int)或close()之前，需要将缓冲区中的数据Flush到调用者write(int)
      */
     private void flushBuffer() throws IOException {
         if (bpos > 0) {
@@ -122,7 +124,7 @@ public class Base64OutputStream extends FilterOutputStream {
     }
 
     /**
-     * Write the given bytes to the encoder/decoder.
+     * 将给定的字节写入编码器/解码器。
      *
      * @param finish true if this is the last batch of input, to cause encoder/decoder state to be
      *               finalized.
@@ -136,7 +138,7 @@ public class Base64OutputStream extends FilterOutputStream {
     }
 
     /**
-     * If b.length is at least len, return b.  Otherwise return a new byte array of length len.
+     * 如果b.length至少为len，则返回b。 否则返回一个长度为len的新字节数组。
      */
     private byte[] embiggen(byte[] b, int len) {
         if (b == null || b.length < len) {

@@ -21,41 +21,37 @@ import java.io.UnsupportedEncodingException;
 import net.dxs.asynchttpclient.BuildConfig;
 
 /**
- * Utilities for encoding and decoding the Base64 representation of binary data.  See RFCs <a
- * href="https://www.ietf.org/rfc/rfc2045.txt">2045</a> and <a href="https://www.ietf.org/rfc/rfc3548.txt">3548</a>.
+ * 用于对二进制数据的Base64表示进行编码和解码的实用程序。
+ * See RFCs <a href="https://www.ietf.org/rfc/rfc2045.txt">2045</a> and <a href="https://www.ietf.org/rfc/rfc3548.txt">3548</a>.
  */
 public class Base64 {
     /**
-     * Default values for encoder/decoder flags.
+     * 编码器/解码器标志的默认值。
      */
     public static final int DEFAULT = 0;
 
     /**
-     * Encoder flag bit to omit the padding '=' characters at the end of the output (if any).
+     * 编码器标志位可以省略输出末尾的填充'='字符（如果有）。
      */
     public static final int NO_PADDING = 1;
 
     /**
-     * Encoder flag bit to omit all line terminators (i.e., the output will be on one long line).
+     * 编码器标志位省略所有线路终端（即，输出将是一个很长的线）。
      */
     public static final int NO_WRAP = 2;
 
     /**
-     * Encoder flag bit to indicate lines should be terminated with a CRLF pair instead of just an
-     * LF.  Has no effect if {@code NO_WRAP} is specified as well.
+     * 用于指示行的编码器标志位应该用CRLF对而不是LF结束。 如果也指定了{@code NO_WRAP}，则不起作用。
      */
     public static final int CRLF = 4;
 
     /**
-     * Encoder/decoder flag bit to indicate using the "URL and filename safe" variant of Base64 (see
-     * RFC 3548 section 4) where {@code -} and {@code _} are used in place of {@code +} and {@code
-     * /}.
+     * 编码器/解码器标志位表示使用Base64的“URL和文件名安全”变体（参见RFC 3548第4节），其中 {@code -}和{@code _}用于代替{@code +}和{@code /}
      */
     public static final int URL_SAFE = 8;
 
     /**
-     * Flag to pass to {@link Base64OutputStream} to indicate that it should not close the output
-     * stream it is wrapping when it itself is closed.
+     * 标志传递给{@link Base64OutputStream}以指示当它本身被关闭时，它不应该关闭它所包装的输出流。
      */
     public static final int NO_CLOSE = 16;
 

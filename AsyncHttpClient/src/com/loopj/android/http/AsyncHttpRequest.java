@@ -41,6 +41,7 @@ public class AsyncHttpRequest implements Runnable {
     private final AtomicBoolean isCancelled = new AtomicBoolean();
     /** 任务取消是否已发送通知标记 */
     private boolean cancelIsNotified;
+    /** 标记请求已发送完成 */
     private volatile boolean isFinished;
     /** 是请求预处理 */
     private boolean isRequestPreProcessed;
@@ -116,7 +117,7 @@ public class AsyncHttpRequest implements Runnable {
             return;
         }
 
-        // Carry out post-processing for this request.
+        // 对此请求进行后期处理。
         onPostProcessRequest(this);
 
         isFinished = true;
@@ -148,21 +149,21 @@ public class AsyncHttpRequest implements Runnable {
             return;
         }
 
-        // Carry out pre-processing for this response.
+        // 对此回应进行预处理。
         responseHandler.onPreProcessResponse(responseHandler, response);
 
         if (isCancelled()) {
             return;
         }
 
-        // The response is ready, handle it.
+        // 响应准备就绪，处理它。
         responseHandler.sendResponseMessage(response);
 
         if (isCancelled()) {
             return;
         }
 
-        // Carry out post-processing for this response.
+        // 对此回应进行后期处理。
         responseHandler.onPostProcessResponse(responseHandler, response);
     }
 
@@ -181,20 +182,18 @@ public class AsyncHttpRequest implements Runnable {
                     makeRequest();
                     return;
                 } catch (UnknownHostException e) {
-                    // switching between WI-FI and mobile data networks can cause a retry which then results in an UnknownHostException
-                    // while the WI-FI is initialising. The retry logic will be invoked here, if this is NOT the first retry
-                    // (to assist in genuine cases of unknown host) which seems better than outright failure
+                    // WI-FI和移动数据网络之间的切换可能导致重试，然后在WI-FI初始化时会导致UnknownHostException。 
+                	// 重试逻辑将在这里被调用，如果这不是第一次重试（以协助未知主机的真实情况），这似乎比彻底失败
                     cause = new IOException("UnknownHostException exception: " + e.getMessage());
                     retry = (executionCount > 0) && retryHandler.retryRequest(e, ++executionCount, context);
                 } catch (NullPointerException e) {
-                    // there's a bug in HttpClient 4.0.x that on some occasions causes
-                    // DefaultRequestExecutor to throw an NPE, see
-                    // https://code.google.com/p/android/issues/detail?id=5255
+                    // 在HttpClient 4.0.x中有一个错误，在某些情况下会导致DefaultRequestExecutor抛出一个NPE, 
+                	// see https://code.google.com/p/android/issues/detail?id=5255
                     cause = new IOException("NPE in HttpClient: " + e.getMessage());
                     retry = retryHandler.retryRequest(cause, ++executionCount, context);
                 } catch (IOException e) {
                     if (isCancelled()) {
-                        // Eating exception, as the request was cancelled
+                        // 由于请求已被取消，因此异常
                         return;
                     }
                     cause = e;
@@ -205,12 +204,12 @@ public class AsyncHttpRequest implements Runnable {
                 }
             }
         } catch (Exception e) {
-            // catch anything else to ensure failure message is propagated
+            // 捕获任何其他东西，以确保故障消息传播
             AsyncHttpClient.log.e("AsyncHttpRequest", "Unhandled exception origin cause", e);
             cause = new IOException("Unhandled exception: " + e.getMessage());
         }
 
-        // cleaned up to throw IOException
+        // 清理掉抛出IOException
         throw (cause);
     }
 
@@ -248,10 +247,10 @@ public class AsyncHttpRequest implements Runnable {
     }
 
     /**
-     * Will set Object as TAG to this request, wrapped by WeakReference
+     * 将该对象设置为TAG，由WeakReference包装
      *
-     * @param TAG Object used as TAG to this RequestHandle
-     * @return this AsyncHttpRequest to allow fluid syntax
+     * @param TAG 用作此RequestHandle的TAG的对象
+     * @return this AsyncHttpRequest允许流体语法
      */
     public AsyncHttpRequest setRequestTag(Object TAG) {
         this.responseHandler.setTag(TAG);
@@ -259,9 +258,9 @@ public class AsyncHttpRequest implements Runnable {
     }
 
     /**
-     * Will return TAG of this AsyncHttpRequest
+     * 将返回此AsyncHttpRequest的TAG
      *
-     * @return Object TAG, can be null, if it's been already garbage collected
+     * @return Object TAG，可以为null，如果已经是垃圾回收
      */
     public Object getTag() {
         return this.responseHandler.getTag();

@@ -25,54 +25,53 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 /**
- * Processes http requests in synchronous mode, so your caller thread will be blocked on each
- * request
+ * 在同步模式下处理http请求，因此您的呼叫者线程将在每个请求上被阻止
  *
  * @see com.loopj.android.http.AsyncHttpClient
  */
 public class SyncHttpClient extends AsyncHttpClient {
 
     /**
-     * Creates a new SyncHttpClient with default constructor arguments values
+     * 创建一个具有默认构造函数参数值的新SyncHttpClient
      */
     public SyncHttpClient() {
         super(false, 80, 443);
     }
 
     /**
-     * Creates a new SyncHttpClient.
+     * 创建一个新的SyncHttpClient。
      *
-     * @param httpPort non-standard HTTP-only port
+     * @param httpPort 非标准的仅HTTP端口
      */
     public SyncHttpClient(int httpPort) {
         super(false, httpPort, 443);
     }
 
     /**
-     * Creates a new SyncHttpClient.
+     * 创建一个新的SyncHttpClient。
      *
-     * @param httpPort  non-standard HTTP-only port
-     * @param httpsPort non-standard HTTPS-only port
+     * @param httpPort  非标准的仅HTTP端口
+     * @param httpsPort 非标准HTTPS唯一端口
      */
     public SyncHttpClient(int httpPort, int httpsPort) {
         super(false, httpPort, httpsPort);
     }
 
     /**
-     * Creates new SyncHttpClient using given params
-     *
-     * @param fixNoHttpResponseException Whether to fix or not issue, by ommiting SSL verification
-     * @param httpPort                   HTTP port to be used, must be greater than 0
-     * @param httpsPort                  HTTPS port to be used, must be greater than 0
+     * 使用给定的参数创建新的synchttpclient
+	 * 
+	 * @param fixNoHttpResponseException 是否通过省略SSL验证来解决问题
+	 * @param httpPort                   要使用的HTTP端口必须大于0。
+	 * @param httpsPort                  要使用的HTTPS端口必须大于0
      */
     public SyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
         super(fixNoHttpResponseException, httpPort, httpsPort);
     }
 
     /**
-     * Creates a new SyncHttpClient.
+     * 创建一个新的SyncHttpClient。
      *
-     * @param schemeRegistry SchemeRegistry to be used
+     * @param schemeRegistry SchemeRegistry要使用
      */
     public SyncHttpClient(SchemeRegistry schemeRegistry) {
         super(schemeRegistry);
@@ -90,12 +89,11 @@ public class SyncHttpClient extends AsyncHttpClient {
         responseHandler.setUseSynchronousMode(true);
 
 		/*
-         * will execute the request directly
+         * 将直接执行请求
 		*/
         newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context).run();
 
-        // Return a Request Handle that cannot be used to cancel the request
-        // because it is already complete by the time this returns
+        // 返回无法用于取消请求的请求句柄，因为它在返回时已经完成
         return new RequestHandle(null);
     }
 }

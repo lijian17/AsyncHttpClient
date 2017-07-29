@@ -33,6 +33,12 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 
+/**
+ * 抢占授权Http请求拦截器
+ * 
+ * @author lijian
+ * @date 2017-7-29 下午11:13:33
+ */
 public class PreemptiveAuthorizationHttpRequestInterceptor implements HttpRequestInterceptor {
 
     public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {

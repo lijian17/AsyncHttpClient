@@ -77,7 +77,6 @@ import java.net.URI;
  * });
  * </pre>
  */
-@SuppressWarnings("ALL")
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
     private static final String LOG_TAG = "AsyncHttpRH";
 
