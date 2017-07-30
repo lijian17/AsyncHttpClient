@@ -41,7 +41,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Simplified multipart entity mainly used for sending one or more files.
+ * 简单的组合实体<br>
+ * 主要用于简化多个实体发送一个或多个文件。
  */
 class SimpleMultipartEntity implements HttpEntity {
 
@@ -62,8 +63,7 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private final List<FilePart> fileParts = new ArrayList<FilePart>();
 
-    // The buffer we use for building the message excluding files and the last
-    // boundary
+    // 我们用于构建消息的缓冲区，不包括文件和最后一个边界
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
     private final ResponseHandlerInterface progressHandler;
@@ -95,7 +95,7 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write(value.getBytes());
             out.write(CR_LF);
         } catch (final IOException e) {
-            // Shall not happen on ByteArrayOutputStream
+            // 不要发生在ByteArrayOutputStream上
             AsyncHttpClient.log.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
         }
     }
@@ -195,7 +195,7 @@ class SimpleMultipartEntity implements HttpEntity {
                 headerStream.write(TRANSFER_ENCODING_BINARY);
                 headerStream.write(CR_LF);
             } catch (IOException e) {
-                // Can't happen on ByteArrayOutputStream
+                // 不能发生在ByteArrayOutputStream上
                 AsyncHttpClient.log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
             }
             return headerStream.toByteArray();
@@ -224,7 +224,7 @@ class SimpleMultipartEntity implements HttpEntity {
         }
     }
 
-    // The following methods are from the HttpEntity interface
+    // 以下方法来自HttpEntity接口
 
     @Override
     public long getContentLength() {
@@ -232,7 +232,7 @@ class SimpleMultipartEntity implements HttpEntity {
         for (FilePart filePart : fileParts) {
             long len = filePart.getTotalLength();
             if (len < 0) {
-                return -1; // Should normally not happen
+                return -1; // 通常不会发生
             }
             contentLen += len;
         }

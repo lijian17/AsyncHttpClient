@@ -37,32 +37,35 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A persistent cookie store which implements the Apache HttpClient {@link CookieStore} interface.
- * Cookies are stored and will persist on the user's device between application sessions since they
- * are serialized and stored in {@link SharedPreferences}. <p>&nbsp;</p> Instances of this class are
- * designed to be used with {@link AsyncHttpClient#setCookieStore}, but can also be used with a
- * regular old apache HttpClient/HttpContext if you prefer.
+ * 一个实现Apache HttpClient {@link CookieStore}接口的持久性cookie存储。 
+ * Cookie被存储，并将在应用程序会话之间持久存储在用户设备上，因为它们被序列化并存储在{@link SharedPreferences}中。
+ * 
+ * <p>&nbsp;</p> 
+ * 该类的实例被设计为与{@link AsyncHttpClient#setCookieStore}一起使用，
+ * 但是如果您愿意，也可以使用常规的旧的apache HttpClient/HttpContext
  */
 public class PersistentCookieStore implements CookieStore {
     private static final String LOG_TAG = "PersistentCookieStore";
     private static final String COOKIE_PREFS = "CookiePrefsFile";
     private static final String COOKIE_NAME_STORE = "names";
+    /** cookie的前缀 */
     private static final String COOKIE_NAME_PREFIX = "cookie_";
+    /** 省略非持久性cookie */
     private boolean omitNonPersistentCookies = false;
 
     private final ConcurrentHashMap<String, Cookie> cookies;
     private final SharedPreferences cookiePrefs;
 
     /**
-     * Construct a persistent cookie store.
+     * 构造一个持久的cookie存储。
      *
-     * @param context Context to attach cookie store to
+     * @param context 将cookie存储附加到的上下文
      */
     public PersistentCookieStore(Context context) {
         cookiePrefs = context.getSharedPreferences(COOKIE_PREFS, 0);
         cookies = new ConcurrentHashMap<String, Cookie>();
 
-        // Load any previously stored cookies into the store
+        // 将任何以前存储的Cookie加载到store
         String storedCookieNames = cookiePrefs.getString(COOKIE_NAME_STORE, null);
         if (storedCookieNames != null) {
             String[] cookieNames = TextUtils.split(storedCookieNames, ",");
@@ -76,7 +79,7 @@ public class PersistentCookieStore implements CookieStore {
                 }
             }
 
-            // Clear out expired cookies
+            // 清除过期的Cookie
             clearExpired(new Date());
         }
     }
@@ -87,14 +90,14 @@ public class PersistentCookieStore implements CookieStore {
             return;
         String name = cookie.getName() + cookie.getDomain();
 
-        // Save cookie into local store, or remove if expired
+        // 将cookie保存到本地存储，如果过期则删除
         if (!cookie.isExpired(new Date())) {
             cookies.put(name, cookie);
         } else {
             cookies.remove(name);
         }
 
-        // Save cookie into persistent store
+        // 将Cookie保存到持久存储中
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.putString(COOKIE_NAME_STORE, TextUtils.join(",", cookies.keySet()));
         prefsWriter.putString(COOKIE_NAME_PREFIX + name, encodeCookie(new SerializableCookie(cookie)));
@@ -103,7 +106,7 @@ public class PersistentCookieStore implements CookieStore {
 
     @Override
     public void clear() {
-        // Clear cookies from persistent store
+        // 从持久性store清除Cookie
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         for (String name : cookies.keySet()) {
             prefsWriter.remove(COOKIE_NAME_PREFIX + name);
@@ -111,7 +114,7 @@ public class PersistentCookieStore implements CookieStore {
         prefsWriter.remove(COOKIE_NAME_STORE);
         prefsWriter.commit();
 
-        // Clear cookies from local store
+        // 从本地存储清除Cookies
         cookies.clear();
     }
 
@@ -124,18 +127,18 @@ public class PersistentCookieStore implements CookieStore {
             String name = entry.getKey();
             Cookie cookie = entry.getValue();
             if (cookie.isExpired(date)) {
-                // Clear cookies from local store
+                // 从本地存储清除Cookies
                 cookies.remove(name);
 
-                // Clear cookies from persistent store
+                // 从持久性store清除Cookie
                 prefsWriter.remove(COOKIE_NAME_PREFIX + name);
 
-                // We've cleared at least one
+                // 我们已经清理了至少一个
                 clearedAny = true;
             }
         }
 
-        // Update names in persistent store
+        // 更新持久存储中的名称
         if (clearedAny) {
             prefsWriter.putString(COOKIE_NAME_STORE, TextUtils.join(",", cookies.keySet()));
         }
@@ -150,19 +153,18 @@ public class PersistentCookieStore implements CookieStore {
     }
 
     /**
-     * Will make PersistentCookieStore instance ignore Cookies, which are non-persistent by
-     * signature (`Cookie.isPersistent`)
+     * 将使PersistentCookieStore实例忽略Cookie，这是通过签名(`Cookie.isPersistent`)不持久的Cookie
      *
-     * @param omitNonPersistentCookies true if non-persistent cookies should be omited
+     * @param omitNonPersistentCookies true:非持久性cookies应该被省略
      */
     public void setOmitNonPersistentCookies(boolean omitNonPersistentCookies) {
         this.omitNonPersistentCookies = omitNonPersistentCookies;
     }
 
     /**
-     * Non-standard helper method, to delete cookie
+     * 非标准帮助方法，删除cookie
      *
-     * @param cookie cookie to be removed
+     * @param cookie 要删除的cookie
      */
     public void deleteCookie(Cookie cookie) {
         String name = cookie.getName() + cookie.getDomain();
@@ -173,10 +175,10 @@ public class PersistentCookieStore implements CookieStore {
     }
 
     /**
-     * Serializes Cookie object into String
+     * 将Cookie对象序列化为String
      *
-     * @param cookie cookie to be encoded, can be null
-     * @return cookie encoded as String
+     * @param cookie 要编码的cookie可以为null
+     * @return cookie 编码为String
      */
     protected String encodeCookie(SerializableCookie cookie) {
         if (cookie == null)
@@ -194,10 +196,10 @@ public class PersistentCookieStore implements CookieStore {
     }
 
     /**
-     * Returns cookie decoded from cookie string
+     * 从cookie字符串返回cookie解码
      *
-     * @param cookieString string of cookie as returned from http request
-     * @return decoded cookie or null if exception occured
+     * @param cookieString 从http请求返回的cookie的字符串
+     * @return 解码的cookie，如果发生异常则为null
      */
     protected Cookie decodeCookie(String cookieString) {
         byte[] bytes = hexStringToByteArray(cookieString);
@@ -216,11 +218,10 @@ public class PersistentCookieStore implements CookieStore {
     }
 
     /**
-     * Using some super basic byte array &lt;-&gt; hex conversions so we don't have to rely on any
-     * large Base64 libraries. Can be overridden if you like!
+     * 使用一些超基本字节数组&lt;-&gt;十六进制转换，所以我们不必依赖任何大的Base64库。 如果你喜欢可以覆盖！
      *
-     * @param bytes byte array to be converted
-     * @return string containing hex values
+     * @param bytes 要转换的字节数组
+     * @return 字符串包含十六进制值
      */
     protected String byteArrayToHexString(byte[] bytes) {
         StringBuilder sb = new StringBuilder(bytes.length * 2);
@@ -235,10 +236,10 @@ public class PersistentCookieStore implements CookieStore {
     }
 
     /**
-     * Converts hex values from strings to byte arra
+     * 将十六进制值从字符串转换为字节数组
      *
-     * @param hexString string of hex-encoded values
-     * @return decoded byte array
+     * @param hexString 十六进制编码值的字符串
+     * @return 解码字节数组
      */
     protected byte[] hexStringToByteArray(String hexString) {
         int len = hexString.length();
