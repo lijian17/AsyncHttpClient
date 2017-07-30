@@ -22,27 +22,26 @@ import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 
 /**
- * 查看
- * Class meant to be used with custom JSON parser (such as GSON or Jackson JSON) <p>&nbsp;</p>
- * {@link #parseResponse(String, boolean)} should be overriden and must return type of generic param
- * class, response will be then handled to implementation of abstract methods {@link #onSuccess(int,
- * org.apache.http.Header[], String, Object)} or {@link #onFailure(int, org.apache.http.Header[],
- * Throwable, String, Object)}, depending of response HTTP status line (result http code)
+ * 类用于与自定义JSON解析器（例如GSON或Jackson JSON）一起使用
+ * <p>&nbsp;</p>
+ * 应该覆盖{@link #parseResponse(String, boolean)}，并且必须返回一般的param类的类型，
+ * 然后响应将被处理以实现抽象方法{@link #onSuccess(int, org.apache.http.Header[], String, Object)}或
+ * {@link #onFailure(int, org.apache.http.Header[], Throwable, String, Object)}，取决于响应HTTP状态行（http结果码）
  *
- * @param <JSON_TYPE> Generic type meant to be returned in callback
+ * @param <JSON_TYPE> 通用类型意图在回调中返回
  */
 public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpResponseHandler {
     private static final String LOG_TAG = "BaseJsonHttpRH";
 
     /**
-     * Creates a new JsonHttpResponseHandler with default charset "UTF-8"
+     * 使用默认字符集"UTF-8"创建一个新的JsonHttpResponseHandler
      */
     public BaseJsonHttpResponseHandler() {
         this(DEFAULT_CHARSET);
     }
 
     /**
-     * Creates a new JsonHttpResponseHandler with given string encoding
+     * 用给定的字符串编码创建一个新的JsonHttpResponseHandler
      *
      * @param encoding result string encoding, see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
      */
@@ -51,23 +50,23 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
     }
 
     /**
-     * Base abstract method, handling defined generic type
+     * 基本抽象方法，处理定义的泛型类型
      *
-     * @param statusCode      HTTP status line
-     * @param headers         response headers
-     * @param rawJsonResponse string of response, can be null
-     * @param response        response returned by {@link #parseResponse(String, boolean)}
+     * @param statusCode      HTTP状态行
+     * @param headers         响应headers
+     * @param rawJsonResponse 相应字符串，不能为null
+     * @param response        由{@link #parseResponse(String, boolean)}返回的响应
      */
     public abstract void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, JSON_TYPE response);
 
     /**
-     * Base abstract method, handling defined generic type
+     * 基本抽象方法，处理定义的泛型类型
      *
-     * @param statusCode    HTTP status line
-     * @param headers       response headers
-     * @param throwable     error thrown while processing request
-     * @param rawJsonData   raw string data returned if any
-     * @param errorResponse response returned by {@link #parseResponse(String, boolean)}
+     * @param statusCode    HTTP状态行
+     * @param headers       响应headers
+     * @param throwable     处理请求时抛出错误
+     * @param rawJsonData   原始字符串数据返回
+     * @param errorResponse 由{@link #parseResponse(String, boolean)}返回的响应
      */
     public abstract void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, JSON_TYPE errorResponse);
 
@@ -135,7 +134,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
             if (!getUseSynchronousMode() && !getUsePoolThread()) {
                 new Thread(parser).start();
             } else {
-                // In synchronous mode everything should be run on one thread
+                // 在同步模式下，一切都应该在一个线程上运行
                 parser.run();
             }
         } else {
@@ -144,13 +143,12 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
     }
 
     /**
-     * Should return deserialized instance of generic type, may return object for more vague
-     * handling
+     * 应该返回泛型类型的反序列化实例，可能会返回对象更多的模糊处理
      *
-     * @param rawJsonData response string, may be null
-     * @param isFailure   indicating if this method is called from onFailure or not
-     * @return object of generic type or possibly null if you choose so
-     * @throws Throwable allows you to throw anything from within deserializing JSON response
+     * @param rawJsonData 响应字符串，可能为null
+     * @param isFailure   指示是否从onFailure调用此方法
+     * @return 通用类型的对象，如果选择，则为null
+     * @throws Throwable允许您从反序列化JSON响应中抛出任何内容
      */
     protected abstract JSON_TYPE parseResponse(String rawJsonData, boolean isFailure) throws Throwable;
 }

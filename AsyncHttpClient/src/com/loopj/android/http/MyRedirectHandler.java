@@ -37,7 +37,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Taken from StackOverflow
+ * 我的重定向处理程序(取自StackOverflow)
  *
  * @author Aymon Fournier, aymon.fournier@gmail.com
  * @see <a href="https://stackoverflow.com/questions/3420767/httpclient-redirecting-to-url-with-spaces-throwing-exception">https://stackoverflow.com/questions/3420767/httpclient-redirecting-to-url-with-spaces-throwing-exception</a>
@@ -53,9 +53,7 @@ class MyRedirectHandler extends DefaultRedirectHandler {
     }
 
     @Override
-    public boolean isRedirectRequested(
-            final HttpResponse response,
-            final HttpContext context) {
+    public boolean isRedirectRequested(final HttpResponse response, final HttpContext context) {
         if (!enableRedirects) {
             return false;
         }
@@ -75,22 +73,20 @@ class MyRedirectHandler extends DefaultRedirectHandler {
     }
 
     @Override
-    public URI getLocationURI(
-            final HttpResponse response,
-            final HttpContext context) throws ProtocolException {
+    public URI getLocationURI(final HttpResponse response, final HttpContext context) throws ProtocolException {
         if (response == null) {
             throw new IllegalArgumentException("HTTP response may not be null");
         }
-        //get the location header to find out where to redirect to
+        // 获取location header以查找要重定向到的位置。
         Header locationHeader = response.getFirstHeader("location");
         if (locationHeader == null) {
-            // got a redirect response, but no location header
+            // 得到重定向响应，但没有location header
             throw new ProtocolException(
                     "Received redirect response " + response.getStatusLine()
                             + " but no location header"
             );
         }
-        //HERE IS THE MODIFIED LINE OF CODE
+        //这里是修改的代码行
         String location = locationHeader.getValue().replaceAll(" ", "%20");
 
         URI uri;
@@ -101,14 +97,14 @@ class MyRedirectHandler extends DefaultRedirectHandler {
         }
 
         HttpParams params = response.getParams();
-        // rfc2616 demands the location value be a complete URI
+        // rfc2616要求location value是一个完整的URI
         // Location       = "Location" ":" absoluteURI
         if (!uri.isAbsolute()) {
             if (params.isParameterTrue(ClientPNames.REJECT_RELATIVE_REDIRECT)) {
                 throw new ProtocolException("Relative redirect location '"
                         + uri + "' not allowed");
             }
-            // Adjust location URI
+            // 调整 location URI
             HttpHost target = (HttpHost) context.getAttribute(
                     ExecutionContext.HTTP_TARGET_HOST);
             if (target == null) {

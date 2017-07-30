@@ -34,8 +34,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
- * Provides interface to deserialize SAX responses, using AsyncHttpResponseHandler. Can be used like
- * this
+ * 提供使用AsyncHttpResponseHandler反序列化SAX响应的接口。<br> 
+ * 可以这样使用
  * <p>&nbsp;</p>
  * <pre>
  *     AsyncHttpClient ahc = new AsyncHttpClient();
@@ -59,15 +59,15 @@ import javax.xml.parsers.SAXParserFactory;
 public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> extends AsyncHttpResponseHandler {
 
     /**
-     * Generic Type of handler
+     * 通用类型的处理程序
      */
     private T handler = null;
     private final static String LOG_TAG = "SaxAsyncHttpRH";
 
     /**
-     * Constructs new SaxAsyncHttpResponseHandler with given handler instance
+     * 使用给定的处理程序实例构造新的SaxAsyncHttpResponseHandler
      *
-     * @param t instance of Handler extending DefaultHandler
+     * @param t Handler扩展DefaultHandler的实例
      * @see org.xml.sax.helpers.DefaultHandler
      */
     public SaxAsyncHttpResponseHandler(T t) {
@@ -79,11 +79,11 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
     }
 
     /**
-     * Deconstructs response into given content handler
+     * 将响应解构为给定的内容处理程序
      *
-     * @param entity returned HttpEntity
-     * @return deconstructed response
-     * @throws java.io.IOException if there is problem assembling SAX response from stream
+     * @param entity 返回HttpEntity
+     * @return 解构响应
+     * @throws java.io.IOException 如果从流中组装SAX响应有问题
      * @see org.apache.http.HttpEntity
      */
     @Override
@@ -117,11 +117,11 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
     }
 
     /**
-     * Default onSuccess method for this AsyncHttpResponseHandler to override
+     * 这个AsyncHttpResponseHandler的默认onSuccess方法来覆盖
      *
-     * @param statusCode returned HTTP status code
-     * @param headers    returned HTTP headers
-     * @param t          instance of Handler extending DefaultHandler
+     * @param statusCode 返回HTTP状态码
+     * @param headers    返回HTTP请求头
+     * @param t          Handler扩展DefaultHandler的实例
      */
     public abstract void onSuccess(int statusCode, Header[] headers, T t);
 
@@ -131,11 +131,11 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
     }
 
     /**
-     * Default onFailure method for this AsyncHttpResponseHandler to override
+     * 这个AsyncHttpResponseHandler的默认onFailure方法来覆盖
      *
-     * @param statusCode returned HTTP status code
-     * @param headers    returned HTTP headers
-     * @param t          instance of Handler extending DefaultHandler
+     * @param statusCode 返回HTTP状态码
+     * @param headers    返回HTTP请求头
+     * @param t          Handler扩展DefaultHandler的实例
      */
     public abstract void onFailure(int statusCode, Header[] headers, T t);
 

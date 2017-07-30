@@ -30,9 +30,9 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}.
- * Receives response body as byte array with a content-type whitelist. (e.g. checks Content-Type
- * against allowed list, Content-length). <p>&nbsp;</p> For example: <p>&nbsp;</p>
+ * 用于拦截和处理使用{@link AsyncHttpClient}的请求的响应。
+ * 接收具有内容类型白名单的字节数组的响应正文。 （例如，根据允许列表检查Content-Type，Content-length）。
+ * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * String[] allowedTypes = new String[] { "image/png" };
@@ -53,6 +53,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
 
     private static final String LOG_TAG = "BinaryHttpRH";
 
+    /** 允许的Content-Type */
     private String[] mAllowedContentTypes = new String[]{
             RequestParams.APPLICATION_OCTET_STREAM,
             "image/jpeg",
@@ -61,25 +62,23 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
     };
 
     /**
-     * Method can be overriden to return allowed content types, can be sometimes better than passing
-     * data in constructor
+     * 可以覆盖方法来返回允许的内容类型，有时可以比在构造函数中传递数据更好
      *
-     * @return array of content-types or Pattern string templates (eg. '.*' to match every response)
+     * @return content-types数组和模式字符串模板 (eg. '.*' 以匹配每个响应)
      */
     public String[] getAllowedContentTypes() {
         return mAllowedContentTypes;
     }
 
     /**
-     * Creates a new BinaryHttpResponseHandler
+     * 创建一个新的BinaryHttpResponseHandler
      */
     public BinaryHttpResponseHandler() {
         super();
     }
 
     /**
-     * Creates a new BinaryHttpResponseHandler, and overrides the default allowed content types with
-     * passed String array (hopefully) of content types.
+     * 创建一个新的BinaryHttpResponseHandler，并覆盖使用传递的String数组（希望）内容类型的默认允许的内容类型。
      *
      * @param allowedContentTypes content types array, eg. 'image/jpeg' or pattern '.*'
      */
@@ -93,8 +92,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
     }
     
     /**
-     * Creates a new BinaryHttpResponseHandler with a user-supplied looper, and overrides the default allowed content types with
-     * passed String array (hopefully) of content types.
+     * 使用用户提供的触发器创建一个新的BinaryHttpResponseHandler，并覆盖使用传递的String数组（希望）内容类型的默认允许的内容类型。
      *
      * @param allowedContentTypes content types array, eg. 'image/jpeg' or pattern '.*'
      * @param looper The looper to work with
@@ -143,7 +141,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
             }
         }
         if (!foundAllowedContentType) {
-            //Content-Type not in allowed list, ABORT!
+            //Content-Type在列表中未匹配到, 舍弃!
             sendFailureMessage(
                 status.getStatusCode(),
                 response.getAllHeaders(),

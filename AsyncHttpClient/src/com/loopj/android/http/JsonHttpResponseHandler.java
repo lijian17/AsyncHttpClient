@@ -26,12 +26,14 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 /**
- * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}, with
- * automatic parsing into a {@link JSONObject} or {@link JSONArray}. <p>&nbsp;</p> This class is
- * designed to be passed to get, post, put and delete requests with the {@link #onSuccess(int,
- * org.apache.http.Header[], org.json.JSONArray)} or {@link #onSuccess(int,
- * org.apache.http.Header[], org.json.JSONObject)} methods anonymously overridden. <p>&nbsp;</p>
- * Additionally, you can override the other event methods from the parent class.
+ * 用于拦截和处理使用{@link AsyncHttpClient}的请求的响应，并自动解析为{@link JSONObject}或{@link JSONArray}。
+ * 
+ * <p>&nbsp;</p>
+ * 这个类被设计为通过get, post, put 和 delete请求，匿名覆盖{@link #onSuccess(int, org.apache.http.Header[], org.json.JSONArray)} 和
+ * {@link #onSuccess(int, org.apache.http.Header[], org.json.JSONObject)}获取数据
+ * 
+ * <p>&nbsp;</p>
+ * 此外，您可以从父类覆盖其他事件方法。
  */
 public class JsonHttpResponseHandler extends TextHttpResponseHandler {
 
@@ -41,23 +43,23 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     private boolean useRFC5179CompatibilityMode = true;
 
     /**
-     * Creates new JsonHttpResponseHandler, with JSON String encoding UTF-8
+     * 使用默认的UTF-8编码JSON String创建一个新的JsonHttpResponseHandler
      */
     public JsonHttpResponseHandler() {
         super(DEFAULT_CHARSET);
     }
 
     /**
-     * Creates new JsonHttpResponseHandler with given JSON String encoding
+     * 使用指定的编码JSON String创建一个新的JsonHttpResponseHandler
      *
-     * @param encoding String encoding to be used when parsing JSON
+     * @param encoding 解析JSON时要使用的字符串编码
      */
     public JsonHttpResponseHandler(String encoding) {
         super(encoding);
     }
 
     /**
-     * Creates new JsonHttpResponseHandler with JSON String encoding UTF-8 and given RFC5179CompatibilityMode
+     * 使用默认的UTF-8编码JSON String创建一个新的JsonHttpResponseHandler并给出RFC5179CompatibilityMode
      *
      * @param useRFC5179CompatibilityMode Boolean mode to use RFC5179 or latest
      */
@@ -67,9 +69,9 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     }
 
     /**
-     * Creates new JsonHttpResponseHandler with given JSON String encoding and RFC5179CompatibilityMode
+     * 使用指定的编码JSON String创建一个新的JsonHttpResponseHandler并给出RFC5179CompatibilityMode
      *
-     * @param encoding                    String encoding to be used when parsing JSON
+     * @param encoding 解析JSON时要使用的字符串编码
      * @param useRFC5179CompatibilityMode Boolean mode to use RFC5179 or latest
      */
     public JsonHttpResponseHandler(String encoding, boolean useRFC5179CompatibilityMode) {
@@ -78,46 +80,46 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     }
 
     /**
-     * Returns when request succeeds
+     * 请求成功时返回
      *
-     * @param statusCode http response status line
-     * @param headers    response headers if any
-     * @param response   parsed response if any
+     * @param statusCode http响应状态行
+     * @param headers    响应头如果有的话
+     * @param response   解析了如果有的话
      */
     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
         AsyncHttpClient.log.w(LOG_TAG, "onSuccess(int, Header[], JSONObject) was not overriden, but callback was received");
     }
 
     /**
-     * Returns when request succeeds
+     * 请求成功时返回
      *
-     * @param statusCode http response status line
-     * @param headers    response headers if any
-     * @param response   parsed response if any
+     * @param statusCode http响应状态行
+     * @param headers    响应头如果有的话
+     * @param response   解析了如果有的话
      */
     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         AsyncHttpClient.log.w(LOG_TAG, "onSuccess(int, Header[], JSONArray) was not overriden, but callback was received");
     }
 
     /**
-     * Returns when request failed
+     * 请求失败时返回
      *
-     * @param statusCode    http response status line
-     * @param headers       response headers if any
-     * @param throwable     throwable describing the way request failed
-     * @param errorResponse parsed response if any
+     * @param statusCode http响应状态行
+     * @param headers    响应头如果有的话
+     * @param throwable     描述请求失败的方式
+     * @param errorResponse 解析了如果有的话
      */
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
         AsyncHttpClient.log.w(LOG_TAG, "onFailure(int, Header[], Throwable, JSONObject) was not overriden, but callback was received", throwable);
     }
 
     /**
-     * Returns when request failed
+     * 请求失败时返回
      *
-     * @param statusCode    http response status line
-     * @param headers       response headers if any
-     * @param throwable     throwable describing the way request failed
-     * @param errorResponse parsed response if any
+     * @param statusCode http响应状态行
+     * @param headers    响应头如果有的话
+     * @param throwable     描述请求失败的方式
+     * @param errorResponse 解析了如果有的话
      */
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
         AsyncHttpClient.log.w(LOG_TAG, "onFailure(int, Header[], Throwable, JSONArray) was not overriden, but callback was received", throwable);
@@ -144,7 +146,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                // In RFC5179 a null value is not a valid JSON
+                                // 在RFC5179中，null不是有效的JSON
                                 if (!useRFC5179CompatibilityMode && jsonResponse == null) {
                                     onSuccess(statusCode, headers, (String) null);
                                 } else if (jsonResponse instanceof JSONObject) {
@@ -152,7 +154,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
                                 } else if (jsonResponse instanceof String) {
-                                    // In RFC5179 a simple string value is not a valid JSON
+                                    // 在RFC5179中，一个简单的字符串值不是有效的JSON
                                     if (useRFC5179CompatibilityMode) {
                                         onFailure(statusCode, headers, (String) jsonResponse, new JSONException("Response cannot be parsed as JSON data"));
                                     } else {
@@ -176,7 +178,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
             if (!getUseSynchronousMode() && !getUsePoolThread()) {
                 new Thread(parser).start();
             } else {
-                // In synchronous mode everything should be run on one thread
+                // 在同步模式下，一切都应该在一个线程上运行
                 parser.run();
             }
         } else {
@@ -195,7 +197,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                // In RFC5179 a null value is not a valid JSON
+                                // 在RFC5179中，null不是有效的JSON
                                 if (!useRFC5179CompatibilityMode && jsonResponse == null) {
                                     onFailure(statusCode, headers, (String) null, throwable);
                                 } else if (jsonResponse instanceof JSONObject) {
@@ -224,7 +226,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
             if (!getUseSynchronousMode() && !getUsePoolThread()) {
                 new Thread(parser).start();
             } else {
-                // In synchronous mode everything should be run on one thread
+                // 在同步模式下，一切都应该在一个线程上运行
                 parser.run();
             }
         } else {
@@ -234,18 +236,18 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     }
 
     /**
-     * Returns Object of type {@link JSONObject}, {@link JSONArray}, String, Boolean, Integer, Long,
-     * Double or {@link JSONObject#NULL}, see {@link org.json.JSONTokener#nextValue()}
-     *
-     * @param responseBody response bytes to be assembled in String and parsed as JSON
+     * 返回类型为{@link JSONObject}, {@link JSONArray}, String, Boolean, Integer, Long, 
+     * Double 或 {@link JSONObject#NULL}的对象，请参阅{@link org.json.JSONTokener#nextValue()}
+     * 
+     * @param responseBody 响应字节在String中组合并解析为JSON
      * @return Object parsedResponse
-     * @throws org.json.JSONException exception if thrown while parsing JSON
+     * @throws org.json.JSONException 在解析JSON时抛出异常
      */
     protected Object parseResponse(byte[] responseBody) throws JSONException {
         if (null == responseBody)
             return null;
         Object result = null;
-        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If JSON is not valid this will return null
+        // 修剪字符串以防止以空白开头，并测试字符串是否有效的JSON，因为解析器不这样做:(如果JSON无效，则返回null
         String jsonString = getResponseString(responseBody, getCharset());
         if (jsonString != null) {
             jsonString = jsonString.trim();
@@ -254,14 +256,13 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                     result = new JSONTokener(jsonString).nextValue();
                 }
             } else {
-                // Check if the string is an JSONObject style {} or JSONArray style []
-                // If not we consider this as a string
+                // 检查字符串是否是以JSONObject的{}样式 or JSONArray的[]样式
+                // 如果不是，我们认为这是一个字符串
                 if ((jsonString.startsWith("{") && jsonString.endsWith("}"))
                         || jsonString.startsWith("[") && jsonString.endsWith("]")) {
                     result = new JSONTokener(jsonString).nextValue();
                 }
-                // Check if this is a String "my String value" and remove quote
-                // Other value type (numerical, boolean) should be without quote
+                // 检查这是否是一个字符串“我的字符串值”，并删除引号其他值类型（数值，布尔值）应该没有引号。
                 else if (jsonString.startsWith("\"") && jsonString.endsWith("\"")) {
                     result = jsonString.substring(1, jsonString.length() - 1);
                 }
